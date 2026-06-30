@@ -38,9 +38,27 @@ from _log import ensure_entry, load_log, relpath_from_root, save_log
 
 install_tls_bypass()
 
+import re  # noqa: E402
+
 import fitz  # PyMuPDF  # noqa: E402
 import pymupdf4llm  # noqa: E402
 from langdetect import DetectorFactory, detect  # noqa: E402
+
+DetectorFactory.seed = 0
+
+
+# Markdown blocks we never want to language-classify (and should always keep).
+_MD_KEEP_PATTERNS = (
+    re.compile(r"^\s*!\[.*\]\(.*\)\s*$"),         # image
+    re.compile(r"^\s*<!--.*$"),                   # html comment (open / inline)
+    re.compile(r".*-->\s*$"),                     # html comment (close)
+    re.compile(r"^\s*[`~]{3,}.*$"),               # fenced code start/end
+    re.compile(r"^\s*\|.*\|\s*$"),                # table row
+    re.compile(r"^\s*[-*_]{3,}\s*$"),             # horizontal rule
+)
+_LETTERY_RE = re.compile(
+    r"[A-Za-z\u0370-\u03FF\u0400-\u04FF\u0530-\u058F\u0590-\u05FF\u0600-\u06FF]"
+)
 
 
 @contextlib.contextmanager
@@ -71,6 +89,63 @@ def detect_language(sample_text: str) -> str | None:
         return detect(sample[:4000])
     except Exception:
         return None
+
+
+def _block_is_keep_pattern(block: str) -> bool:
+    """True for markdown blocks that should never be lang-filtered."""
+    for line in block.splitlines():
+        if any(p.match(line) for p in _MD_KEEP_PATTERNS):
+            return True
+    return False
+
+
+def _strip_md_for_lang_detect(block: str) -> str:
+    """Strip headings, emphasis, lists, etc. before lang detection."""
+    text = block
+    # remove inline emphasis markers
+    text = re.sub(r"[*_`~]+", " ", text)
+    # remove leading list / heading markers
+    text = re.sub(r"(?m)^\s*(#{1,6}|[-*+]|\d+\.)\s+", "", text)
+    # collapse whitespace
+    text = re.sub(r"\s+", " ", text)
+    return text.strip()
+
+
+def filter_foreign_paragraphs(md_text: str, doc_lang: str | None) -> tuple[str, int]:
+    """Drop paragraphs whose detected language differs from doc_lang.
+
+    Short paragraphs (<= 80 chars of letters), markdown structural blocks
+    (images, code fences, tables, hrules, comments), and paragraphs we
+    can't classify are always kept. Returns (filtered_text, dropped_count).
+    """
+    if not doc_lang:
+        return md_text, 0
+
+    blocks = re.split(r"\n\s*\n", md_text)
+    kept: list[str] = []
+    dropped = 0
+    for block in blocks:
+        if not block.strip():
+            kept.append(block)
+            continue
+        if _block_is_keep_pattern(block):
+            kept.append(block)
+            continue
+        stripped = _strip_md_for_lang_detect(block)
+        letter_count = len(_LETTERY_RE.findall(stripped))
+        if letter_count <= 80:
+            kept.append(block)
+            continue
+        try:
+            block_lang = detect(stripped[:4000])
+        except Exception:
+            kept.append(block)
+            continue
+        if block_lang == doc_lang:
+            kept.append(block)
+        else:
+            dropped += 1
+    return "\n\n".join(kept), dropped
 
 
 def inspect_pdf(pdf_path: Path) -> tuple[int, bool, str | None]:
@@ -176,11 +251,20 @@ def process_pdf(pdf_path: Path, log: dict, force: bool) -> dict:
         print(f"  FAILED: {exc}", flush=True)
         return entry
 
+    dropped = 0
+    if CONFIG.step1_drop_foreign_paragraphs:
+        original_text = md_path.read_text(encoding="utf-8")
+        filtered_text, dropped = filter_foreign_paragraphs(original_text, src_lang)
+        if dropped:
+            md_path.write_text(filtered_text, encoding="utf-8")
+            print(f"  dropped {dropped} foreign-language paragraph(s)", flush=True)
+
     entry["step1"] = {
         "status": "done",
         "md_relpath": relpath_from_root(md_path),
         "images_dir_relpath": relpath_from_root(images_dir) if images_dir else None,
         "image_count": image_count,
+        "dropped_foreign_paragraphs": dropped,
         "at": time.strftime("%Y-%m-%d %H:%M:%S"),
         "error": None,
     }

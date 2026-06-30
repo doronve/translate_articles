@@ -15,6 +15,11 @@ source_dir       = "to_translate"
 # Layout: <step1_md_dir>/<basename>/<basename>.md (+ extracted images if any)
 step1_md_dir     = "step1_md"
 
+# Translated Markdown output (the new MD-based translation step).
+# Layout: <translated_md_dir>/<basename>/<basename>.he.md
+# Images stay referenced from step1_md/ so we don't duplicate them.
+translated_md_dir = "translated_md"
+
 # Where translated outputs land. For each translated PDF we create
 # <translated_dir>/<basename>/ containing the original PDF + the *.he.docx.
 translated_dir   = "translated"
@@ -48,6 +53,12 @@ images_subdir    = "images"
 
 # Image DPI for extracted page-fallback images (higher = sharper, larger).
 image_dpi        = 150
+
+# When true, paragraphs whose detected language differs from the document's
+# main source language are dropped (e.g. the Slovenian abstract in Gopher
+# et al. 2001). Short paragraphs (<= 80 chars) and ones containing only
+# digits / markdown syntax are kept regardless.
+drop_foreign_paragraphs = true
 
 [translation]
 # Target language for the translation. "iw" is the legacy Google code for

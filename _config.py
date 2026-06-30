@@ -31,6 +31,7 @@ DEFAULTS: dict[str, dict[str, Any]] = {
     "paths": {
         "source_dir": "to_translate",
         "step1_md_dir": "step1_md",
+        "translated_md_dir": "translated_md",
         "translated_dir": "translated",
         "error_dir": "error_translate",
         "log_file": "translation_log.json",
@@ -44,6 +45,7 @@ DEFAULTS: dict[str, dict[str, Any]] = {
         "extract_images": True,
         "images_subdir": "images",
         "image_dpi": 150,
+        "drop_foreign_paragraphs": True,
     },
     "translation": {
         "target_language": "iw",
@@ -88,6 +90,7 @@ class Config:
     # paths
     source_dir: Path
     step1_md_dir: Path
+    translated_md_dir: Path
     translated_dir: Path
     error_dir: Path
     log_file: Path
@@ -101,6 +104,7 @@ class Config:
     step1_extract_images: bool
     step1_images_subdir: str
     step1_image_dpi: int
+    step1_drop_foreign_paragraphs: bool
 
     # translation
     target_language: str
@@ -156,6 +160,7 @@ def load_config(path: Path | None = None) -> Config:
     return Config(
         source_dir=_resolve_path(paths["source_dir"]),
         step1_md_dir=_resolve_path(paths["step1_md_dir"]),
+        translated_md_dir=_resolve_path(paths["translated_md_dir"]),
         translated_dir=_resolve_path(paths["translated_dir"]),
         error_dir=_resolve_path(paths["error_dir"]),
         log_file=_resolve_path(paths["log_file"]),
@@ -165,6 +170,7 @@ def load_config(path: Path | None = None) -> Config:
         step1_extract_images=bool(step1["extract_images"]),
         step1_images_subdir=str(step1["images_subdir"]),
         step1_image_dpi=int(step1["image_dpi"]),
+        step1_drop_foreign_paragraphs=bool(step1["drop_foreign_paragraphs"]),
         target_language=str(tr["target_language"]),
         engine=str(tr["engine"]),
         chunk_char_limit=int(tr["chunk_char_limit"]),

@@ -11,12 +11,13 @@ tuned before moving on:
 |---|---|---|---|
 | 0 | `_download_drive.py` | Google Drive folder | `to_translate/*.pdf` |
 | 1 | `step1_pdf_to_md.py` | `to_translate/*.pdf` | `step1_md/<basename>/*.md` (+ `images/`) |
-| 2 | _(TBD — review markdown first)_ | step 1 markdown | cleaned markdown ready to translate |
-| 3 | `translate_articles.py` | (currently) `to_translate/*.pdf` | `translated/<basename>/*.he.docx` |
+| 2 | `translate_md.py` | `step1_md/<basename>/*.md` | `translated_md/<basename>/*.he.md` |
+| 3a | `translate_articles.py` | `to_translate/*.pdf` (legacy direct PDF→DOCX flow) | `translated/<basename>/*.he.docx` |
 
 Every step shares one durable status log (`translation_log.json`) keyed by
 SHA-256 of the source PDF; each step writes its own nested object
-(`step1`, `translation`, …) so duplicates are never re-processed.
+(`step1`, `translation_md`, `translation`, …) so duplicates are never
+re-processed.
 
 ## Layout
 
@@ -31,8 +32,11 @@ SHA-256 of the source PDF; each step writes its own nested object
   Non-PDF entries (Google Docs translations / summaries) are intentionally excluded here.
 - `step1_md/<basename>/` — step 1 output: `*.md` in the original language plus
   an `images/` folder for extracted figures.
-- `translated/<basename>/` — for each translated PDF, a folder containing both
-  the original PDF and a Hebrew DOCX (`*.he.docx`, right-to-left).
+- `translated_md/<basename>/` — Hebrew Markdown (`*.he.md`) produced from the
+  step 1 markdown. Image refs in this file point back to the matching
+  `step1_md/<basename>/images/` so figures are never duplicated.
+- `translated/<basename>/` — legacy direct-from-PDF flow: original PDF +
+  Hebrew DOCX (`*.he.docx`, right-to-left).
 - `error_translate/` — PDFs whose translation failed; the error message is
   stored in `translation_log.json`.
 - `translation_log.json` — durable record of every file we've seen, keyed by
@@ -40,8 +44,11 @@ SHA-256 of the source PDF; each step writes its own nested object
 - `index.html` — generated browseable table with columns:
   Original | Translated | Has pictures | Page count | Source language | Translated at.
 - `_download_drive.py` — pulls the PDFs from Drive into `to_translate/`.
-- `step1_pdf_to_md.py` — PDF → English Markdown via `pymupdf4llm`.
-- `translate_articles.py` — the translation pipeline.
+- `step1_pdf_to_md.py` — PDF → English Markdown via `pymupdf4llm`. Optional
+  per-paragraph language filter drops e.g. the Slovenian abstract in Gopher.
+- `translate_md.py` — English Markdown → Hebrew Markdown (preserves
+  headings, lists, image refs, tables, HTML comments).
+- `translate_articles.py` — legacy direct PDF → DOCX translation pipeline.
 
 ## Configuration
 
@@ -111,7 +118,39 @@ py -3.13 step1_pdf_to_md.py --only "Gadot NEA 2019*"     --force
 
 Markdown extraction is delegated to `pymupdf4llm`. When `[step1].extract_images`
 is true, figures are written to `step1_md/<basename>/images/` and referenced
-from the `.md` file. Re-running is idempotent unless `--force` is passed.
+from the `.md` file. When `[step1].drop_foreign_paragraphs` is true, paragraphs
+whose detected language differs from the document's main source language are
+dropped (e.g. the Slovenian abstract in Gopher 2001). Re-running is idempotent
+unless `--force` is passed.
+
+## Step 2: English MD → Hebrew MD
+
+```powershell
+# all entries with step1 done
+py -3.13 translate_md.py
+
+# just one file
+py -3.13 translate_md.py --only "Gopher et al. 2001*" --force
+```
+
+The translator:
+
+- Splits the markdown into blocks (passthrough / heading / list /
+  blockquote / prose) and only translates the text content of each.
+- Passes images, code fences, tables, HTML comments and horizontal rules
+  through verbatim.
+- Rewrites image references in the translated MD to point back at
+  `../../step1_md/<basename>/images/...` so figures are never duplicated.
+- Detects Google Translate error-page responses (occasional "Error 500"
+  HTML pages from the free endpoint) and retries with backoff.
+- Adds an HTML comment at the top of each Hebrew MD that records the
+  source filename, engine, and timestamp.
+
+If you want a Word file later, run pandoc over the produced `.he.md`:
+
+```powershell
+pandoc "translated_md/<basename>/<basename>.he.md" -o "<basename>.he.docx" --from gfm
+```
 
 ## Translate PDFs
 

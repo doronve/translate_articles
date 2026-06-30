@@ -12,8 +12,6 @@ UDK 903’12/’15(5-11)"634" Documenta Praehistorica XXVIII
 
 ABSTRACT – _An accumulation of data concerning the domestication of plants and the refinement of research questions in the last decade have enabled us a new look at the Neolithic Revolution and Neolithization processes in the Levant. This paper raises some points concerning the “When” and “Where” of plant domestication and suggests that the origins of plant domestication were in a welldefined region in southeast Turkey and north Syria. It presents a view on the process of Neolithization in the Levant and offers some comments concerning the background and motivations behind the Neolithic Revolution._ 
 
-IZVLE∞EK – _Nara∏≠anje koli≠ine podatkov o udoma≠itvi rastlin in vedno bolj natan≠na vpra∏anja raziskovalcev so v zadnjem desetletju omogo≠ili, da na novo ovrednotimo neolitsko revolucijo in proces neolitizacije v Levantu. V ≠lanku izpostavljamo nekatere vidike “≠asa” in “kraja” udoma≠itve rastlin ter menimo, da je bil izvor udoma≠itve rastlin na jasno omejenem obmo≠ju jugovzhodne Tur≠ije in severne Sirije. Predstavimo pogled na proces neolitizacije v Levantu in nekoliko pojasnimo dru∫beno okolje in motive za neolitsko revolucijo._ 
-
 KEY WORDS – _agriculture; cultivation; domestication; Levant; Neolithization_ 
 
 ### **INTRODUCTION** 
@@ -36,9 +34,7 @@ Developments in archaeological thought in the last two decades (mainly the growi
 
 The basic old world (Middle East, Europe, Egypt/Ethiopia, North Africa) founder domesticated plants package includes, in its primary form, cereals (wheats, barley), pulses (pea, lentil, chickpea, bitter vetch) and flax as a fibre crop. Domesticated animals include mainly sheep-goat, cattle and pig (the dog was domesticated much earlier by Natufian communities in the southern Levant). We may say that it has become generally accepted that the origins of this founder package were in the Near East and that it had spread throughout Europe and parts of Asia and Africa ( _Zohary and Hopf 1993; 2000_ ) (in other parts of the world different agro-packages have emerged). When establishing itself, this package caused immense change in all aspects of life which we usually refer to as “Neolithization” – a term emphasizing the dynamic nature of the Neolithic period. Taking into account the complexity of Neolithization and its demands on aspects of human perception, organization, activity/behaviour etc., this may be considered a very fast process in 
 
-
 ![](images/Gopher_et_al._2001.The_when_the_where_and_the_why_of_the_Ne.pdf-0002-06.png)
-
 
 **_Map of region and sites mentioned in text: 1. Hallan Çemi Tepesi, 2. Cayönü, 3. Cafer Höyük, 4. Nevalli Çori, 5. Göbekli Tepe, 6. Dja’de, 7. Jerf el Ahmar, 8. Mureybet, 9. Tell Abu Hureyra, 10. Nemrik, 11. M’lefaat, 12. Qermez Dere, 13. Tell Aswad, 14. Yiftahel, 15. Jericho, Netiv Hagdud and Gilgal I. Large asterisk for Karacada_** _g_ **_._** 
 
@@ -222,8 +218,6 @@ ABBO S., LEV-YADUN S., LADIZINSKY G. 2001. Tracing the wild genetic stocks of cr
 
 AMMERMAN A. J. and CAVALLI-SFORZA K. L. 1971. Measuring the rate of spread of early farming in Europe. _Man 6: 674–688_ . 
 
-ANDERSON P. C. 1995. Introduction et Problematic: L’agriculture a Aswad et ses antecedents au Levant. In H. de Contenson (ed.), _Aswad et Ghoraife, Sites Neolithique Damascene (Syrie) aux IX et VIII millenaires avant l’ere chretienne: 221–231_ . 
-
 BADR A., MÜLLER K., SCHÄFER-PREGL R., EL RABEY H., EFFGEN S., IBRAHIM H. H., POZZI C., ROHDE W. and SALAMINI F. 2000. On the origin and domestication history of barley ( _Hordeum vulgare_ ). _Molecular Biology and Evolution 17: 499–510_ . 
 
 1998a. The role of the Younger Dryas in the origins fo cultivation in the Levant. Abstract of paper presented in the International workshop _The transition from foraging to farming in southwest Asia_ . Groningen, 7–11<sup>th</sup> Sept. 1998. 
@@ -305,8 +299,6 @@ The “when”, the “where” and the “why” of the Neolithic revolution in
 1995. _The living fields. Our agricultural heritage_ , Cambridge University Press, Cambridge. 
 
 HAYDEN B. 1990. Nimrods, piscators, pluckers and planters: The emergence of food production. _Journal of Anthropological Archaeology 9(3): 225–236_ . 
-
-HELMER D., ROITEL V., SANA M. and WILCOX G. 1998. Interpretations environnementales des donnees archeozoologiques et archeobotaniques en Syrie du Nord de 16000 BP a 7000 BP, et les debuts de la domestication des plantes et des animaux. In M. Fortin and O. Aurench (eds.), _Natural space, inhabited space in Northern Syria (10_<sup>_th_</sup> _–2_<sup>_nd_</sup> _millennium B.C.), Bulletin 33: 9–34_ . 
 
 HEUN M., SHÄFER-PREGL R., KLAWAN D., CASTAGNA R., ACCERBI M., BORGHI B. and SALAMANI F. 1997. Site of einkorn wheat domestication identified by DNA fingerprinting. _Science 278: 1312–1314_ . 
 
@@ -391,8 +383,6 @@ VALLA F. 1995. The first settled societies – Natufian (12 500–10 200 bp). In
 WRIGHT H. E. Jr. 1968. Natural environment of early food production north of Mesopotamia. _Science 161: 334–339_ . 
 
 WILCOX G. 1998. Frequency variation of major cereal components from 9<sup>th</sup> and 10<sup>th</sup> millennium (bp. non cal.) sites in the Levant. Abstract of paper presented at the International workshop _“The Transition from Foraging to Farming in southwest Asia”_ Groningen, 7–11<sup>th</sup> Sept. 1998. 
-
-2000. Nouvelle donnees sur l’origine de la domestication des plantes au Proch Orient. In J. Guilaine (ed.), _Premiers Paysans du Monde: 121–140_ . 
 
 ZOHARY D. 1989. Domestication of the southwest Asian Neolithic crop assemblage of cereals, pulses and flax: the evidence from the living plants. In D. R. Harris and G. C. Hillman (eds.), _Foraging and farming: the evolution of plant exploitation: 358–373_ . 
 
