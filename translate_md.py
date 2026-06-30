@@ -200,6 +200,18 @@ _GT_ERROR_SIGNATURES = (
     re.compile(r"<html", re.IGNORECASE),
 )
 
+# Substrings in raised exceptions that mean "Google is rate-limiting /
+# blocking us"; we need to wait minutes, not seconds, for these.
+_RATE_LIMIT_SIGNATURES = (
+    "api connection error",
+    "Read timed out",
+    "Connection aborted",
+    "remote end closed connection",
+    "ConnectionError",
+    "Too Many Requests",
+    "RequestError",
+)
+
 
 def _looks_like_translate_error_page(text: str) -> bool:
     if not text:
@@ -208,7 +220,24 @@ def _looks_like_translate_error_page(text: str) -> bool:
     return any(p.search(head) for p in _GT_ERROR_SIGNATURES)
 
 
+def _looks_like_rate_limit(exc: Exception) -> bool:
+    msg = str(exc).lower()
+    return any(sig.lower() in msg for sig in _RATE_LIMIT_SIGNATURES)
+
+
 class _RetryingTranslator:
+    """Adapter over deep_translator with multi-tier backoff.
+
+    * Transient errors (random HTTP hiccup): short backoff, few retries.
+    * Rate-limit / connection errors: long backoff (minutes), more retries
+      — the free Google endpoint blocks our IP for ~5-30 minutes after
+      too many rapid requests.
+    """
+
+    # tier-2 (rate-limit) waits: 60s, 120s, 240s, 480s, 600s
+    _RATE_LIMIT_WAITS = (60, 120, 240, 480, 600)
+    # tier-1 (transient) waits: derived from CONFIG.retry_backoff_seconds
+
     def __init__(self) -> None:
         if CONFIG.engine != "google":
             raise NotImplementedError(
@@ -218,20 +247,46 @@ class _RetryingTranslator:
         self._engine = GoogleTranslator(source="auto", target=CONFIG.target_language)
         self.retries = max(CONFIG.retries, 5)
         self.backoff = CONFIG.retry_backoff_seconds
+        self._rate_limit_index = 0  # index into _RATE_LIMIT_WAITS for one block
+
+    def _reset_rate_limit(self) -> None:
+        self._rate_limit_index = 0
+
+    def _wait_rate_limit(self) -> bool:
+        """Sleep using the next rate-limit tier. Return True if we should keep trying."""
+        if self._rate_limit_index >= len(self._RATE_LIMIT_WAITS):
+            return False
+        wait = self._RATE_LIMIT_WAITS[self._rate_limit_index]
+        self._rate_limit_index += 1
+        print(
+            f"    looks like rate-limit / connection issue; "
+            f"sleeping {wait}s before retry (tier {self._rate_limit_index}/{len(self._RATE_LIMIT_WAITS)})",
+            flush=True,
+        )
+        time.sleep(wait)
+        return True
 
     def translate(self, text: str) -> str:
         if not text or not text.strip():
             return ""
         last_exc: Exception | None = None
         last_bad: str | None = None
-        for attempt in range(self.retries):
+        transient_attempts = 0
+        while True:
             try:
                 out = self._engine.translate(text) or ""
             except Exception as exc:  # noqa: BLE001
                 last_exc = exc
-                wait = self.backoff * (attempt + 1)
+                if _looks_like_rate_limit(exc):
+                    if not self._wait_rate_limit():
+                        break
+                    continue
+                transient_attempts += 1
+                if transient_attempts >= self.retries:
+                    break
+                wait = self.backoff * transient_attempts
                 print(
-                    f"    translate retry {attempt + 1}/{self.retries} "
+                    f"    translate retry {transient_attempts}/{self.retries} "
                     f"after {wait:.1f}s ({exc})",
                     flush=True,
                 )
@@ -239,17 +294,22 @@ class _RetryingTranslator:
                 continue
             if _looks_like_translate_error_page(out):
                 last_bad = out[:120]
-                wait = self.backoff * (attempt + 2)
+                transient_attempts += 1
+                if transient_attempts >= self.retries:
+                    break
+                wait = self.backoff * (transient_attempts + 1)
                 print(
                     f"    translate returned error page "
-                    f"(attempt {attempt + 1}/{self.retries}); waiting {wait:.1f}s",
+                    f"(attempt {transient_attempts}/{self.retries}); waiting {wait:.1f}s",
                     flush=True,
                 )
                 time.sleep(wait)
                 continue
+            # success: reset the rate-limit tier so next call starts fresh
+            self._reset_rate_limit()
             return out
         msg = last_bad or str(last_exc) or "unknown failure"
-        raise RuntimeError(f"translation failed after {self.retries} attempts: {msg}")
+        raise RuntimeError(f"translation failed: {msg}")
 
 
 # ---------------------------------------------------------------------------
@@ -343,10 +403,29 @@ def translate_one(
         return entry
 
     translation_md = entry.get("translation_md") or {}
-    if translation_md.get("status") == "done" and not force:
+    if translation_md.get("status") in {"done", "already_hebrew"} and not force:
         print(
-            f"  translation_md already done -> {translation_md.get('translated_md_relpath')}; "
+            f"  translation_md already {translation_md.get('status')} -> "
+            f"{translation_md.get('translated_md_relpath') or '(no file)'}; "
             "use --force to redo.",
+            flush=True,
+        )
+        return entry
+
+    src_lang = entry.get("source_lang")
+    if src_lang in {"he", "iw"} and CONFIG.skip_already_hebrew:
+        entry["translation_md"] = {
+            "status": "already_hebrew",
+            "translated_md_relpath": None,
+            "source_md_relpath": step1.get("md_relpath"),
+            "engine": CONFIG.engine,
+            "target_language": CONFIG.target_language,
+            "at": time.strftime("%Y-%m-%d %H:%M:%S"),
+            "error": None,
+        }
+        print(
+            f"  source already in Hebrew (lang={src_lang}); marking as already_hebrew, "
+            "no translation produced.",
             flush=True,
         )
         return entry
@@ -356,6 +435,7 @@ def translate_one(
     dest_folder = CONFIG.translated_md_dir / step1_basename
     dest_folder.mkdir(parents=True, exist_ok=True)
     dest_path = dest_folder / (md_path.stem + ".he.md")
+    partial_path = dest_folder / (md_path.stem + ".partial.json")
 
     blocks = parse_blocks(src_text)
     prose_block_count = sum(1 for b in blocks if b.kind != "passthrough")
@@ -365,6 +445,30 @@ def translate_one(
         flush=True,
     )
 
+    # Load previous partial (per-block index -> translated text) if present.
+    cache: dict[int, str] = {}
+    if partial_path.exists():
+        try:
+            import json as _json
+            raw = _json.loads(partial_path.read_text(encoding="utf-8"))
+            if raw.get("src_sha") == entry["sha256"]:
+                cache = {int(k): v for k, v in (raw.get("blocks") or {}).items()}
+                print(f"  resuming from partial: {len(cache)} blocks already translated", flush=True)
+            else:
+                print("  partial cache present but src changed; ignoring", flush=True)
+        except Exception:
+            pass
+
+    def _flush_partial() -> None:
+        import json as _json
+        partial_path.write_text(
+            _json.dumps(
+                {"src_sha": entry["sha256"], "blocks": {str(k): v for k, v in cache.items()}},
+                ensure_ascii=False,
+            ),
+            encoding="utf-8",
+        )
+
     try:
         out_parts: list[str] = []
         translated_count = 0
@@ -373,23 +477,33 @@ def translate_one(
                 out_parts.append(block.text)
                 continue
             translated_count += 1
+            if idx in cache:
+                out_parts.append(cache[idx])
+                continue
             print(
                 f"    [{translated_count}/{prose_block_count}] block #{idx} "
                 f"kind={block.kind} ({len(block.text)} chars)",
                 flush=True,
             )
-            out_parts.append(translate_block(block, translator))
+            translated = translate_block(block, translator)
+            cache[idx] = translated
+            out_parts.append(translated)
+            if translated_count % 20 == 0:
+                _flush_partial()
         out_text = "".join(out_parts)
         out_text = _rewrite_image_refs_to_step1(out_text, step1_basename)
     except Exception as exc:  # noqa: BLE001
         traceback.print_exc()
+        _flush_partial()
         entry["translation_md"] = {
             "status": "error",
             "translated_md_relpath": None,
             "at": time.strftime("%Y-%m-%d %H:%M:%S"),
             "error": str(exc),
+            "partial_relpath": relpath_from_root(partial_path),
+            "partial_blocks_done": len(cache),
         }
-        print(f"  FAILED: {exc}", flush=True)
+        print(f"  FAILED: {exc} (partial cache saved with {len(cache)} blocks)", flush=True)
         return entry
 
     # Add a small header so the reader knows what this is.
@@ -400,6 +514,12 @@ def translate_one(
         f"{step1.get('md_relpath')} -->\n\n"
     )
     dest_path.write_text(header + out_text, encoding="utf-8")
+    # success: clean up partial cache
+    if partial_path.exists():
+        try:
+            partial_path.unlink()
+        except Exception:
+            pass
 
     entry["translation_md"] = {
         "status": "done",
@@ -486,11 +606,11 @@ def main() -> int:
     try:
         for entry in candidates:
             tmd = entry.get("translation_md") or {}
-            already_done = tmd.get("status") == "done"
+            already_done = tmd.get("status") in {"done", "already_hebrew"}
             if already_done and not args.force:
                 print(
                     f"\n=== {entry['original_name']} ===\n"
-                    f"  translation_md already done; skipping.",
+                    f"  translation_md already {tmd.get('status')}; skipping.",
                     flush=True,
                 )
                 continue

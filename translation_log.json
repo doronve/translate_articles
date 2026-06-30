@@ -32,6 +32,32 @@
       "translated_md_relpath": "translated_md/Gopher et al. 2001.The_when_the_where_and_the_why_of_the_Ne/Gopher et al. 2001.The_when_the_where_and_the_why_of_the_Ne.he.md"
     }
   },
+  "1c0bb31e3e6d9ee21f1f571fb6a7057a30fdc1f70adde05fad2943a0238e56cb": {
+    "duplicates": [],
+    "has_pictures": true,
+    "original_name": "_  גצוב התקופה הכלקוליתית הקדומה 170-57-66.pdf",
+    "page_count": 10,
+    "sha256": "1c0bb31e3e6d9ee21f1f571fb6a7057a30fdc1f70adde05fad2943a0238e56cb",
+    "source_lang": "he",
+    "step1": {
+      "at": "2026-06-30 10:52:12",
+      "dropped_foreign_paragraphs": 19,
+      "error": null,
+      "image_count": 16,
+      "images_dir_relpath": "step1_md/_  גצוב התקופה הכלקוליתית הקדומה 170-57-66/images",
+      "md_relpath": "step1_md/_  גצוב התקופה הכלקוליתית הקדומה 170-57-66/_  גצוב התקופה הכלקוליתית הקדומה 170-57-66.md",
+      "status": "done"
+    },
+    "translation_md": {
+      "at": "2026-06-30 11:05:36",
+      "engine": "google",
+      "error": null,
+      "source_md_relpath": "step1_md/_  גצוב התקופה הכלקוליתית הקדומה 170-57-66/_  גצוב התקופה הכלקוליתית הקדומה 170-57-66.md",
+      "status": "already_hebrew",
+      "target_language": "iw",
+      "translated_md_relpath": null
+    }
+  },
   "1e89e657bde6378407fb71c2b45203620229fda5f6b18053399c518a90c7988d": {
     "duplicates": [],
     "has_pictures": true,
@@ -56,6 +82,262 @@
       "status": "done",
       "target_language": "iw",
       "translated_md_relpath": "translated_md/Gadot NEA 2019  Iron I settlement and the urban centers/Gadot NEA 2019  Iron I settlement and the urban centers.he.md"
+    }
+  },
+  "4dfb9063dcb876cfc4a613b68e00a41063608a7ed5f4c98ff1219f5dd4913f44": {
+    "duplicates": [],
+    "has_pictures": true,
+    "original_name": "Yasur-Landau.2015.MB Canaan from Arcjaeology of Society Chapter_12.pdf",
+    "page_count": 21,
+    "sha256": "4dfb9063dcb876cfc4a613b68e00a41063608a7ed5f4c98ff1219f5dd4913f44",
+    "source_lang": "en",
+    "step1": {
+      "at": "2026-06-30 10:58:23",
+      "dropped_foreign_paragraphs": 1,
+      "error": null,
+      "image_count": 5,
+      "images_dir_relpath": "step1_md/Yasur-Landau.2015.MB Canaan from Arcjaeology of Society Chapter_12/images",
+      "md_relpath": "step1_md/Yasur-Landau.2015.MB Canaan from Arcjaeology of Society Chapter_12/Yasur-Landau.2015.MB Canaan from Arcjaeology of Society Chapter_12.md",
+      "status": "done"
+    },
+    "translation_md": {
+      "at": "2026-06-30 11:35:40",
+      "engine": "google",
+      "error": null,
+      "source_md_relpath": "step1_md/Yasur-Landau.2015.MB Canaan from Arcjaeology of Society Chapter_12/Yasur-Landau.2015.MB Canaan from Arcjaeology of Society Chapter_12.md",
+      "status": "done",
+      "target_language": "iw",
+      "translated_md_relpath": "translated_md/Yasur-Landau.2015.MB Canaan from Arcjaeology of Society Chapter_12/Yasur-Landau.2015.MB Canaan from Arcjaeology of Society Chapter_12.he.md"
+    }
+  },
+  "769c8743f3eea8ed59471a2ffe6c4cff390072945ec5a86484cb71edb73747d6": {
+    "duplicates": [],
+    "has_pictures": true,
+    "original_name": "רוזנברג התקופה כלקוליתית המאוחרת.pdf",
+    "page_count": 10,
+    "sha256": "769c8743f3eea8ed59471a2ffe6c4cff390072945ec5a86484cb71edb73747d6",
+    "source_lang": "he",
+    "step1": {
+      "at": "2026-06-30 10:59:22",
+      "dropped_foreign_paragraphs": 14,
+      "error": null,
+      "image_count": 13,
+      "images_dir_relpath": "step1_md/רוזנברג התקופה כלקוליתית המאוחרת/images",
+      "md_relpath": "step1_md/רוזנברג התקופה כלקוליתית המאוחרת/רוזנברג התקופה כלקוליתית המאוחרת.md",
+      "status": "done"
+    },
+    "translation_md": {
+      "at": "2026-06-30 11:35:40",
+      "engine": "google",
+      "error": null,
+      "source_md_relpath": "step1_md/רוזנברג התקופה כלקוליתית המאוחרת/רוזנברג התקופה כלקוליתית המאוחרת.md",
+      "status": "already_hebrew",
+      "target_language": "iw",
+      "translated_md_relpath": null
+    }
+  },
+  "a3ad583e101b00cf8c925db2fbe74fc958a91c88b15ad0b7c99d051fb6bdea9f": {
+    "duplicates": [],
+    "has_pictures": true,
+    "original_name": "Goring-Morris and Belfer Cohen.2014.The_southern_Levant_Cisjordan_during_the_Neolithic_period (1).pdf",
+    "page_count": 24,
+    "sha256": "a3ad583e101b00cf8c925db2fbe74fc958a91c88b15ad0b7c99d051fb6bdea9f",
+    "source_lang": "en",
+    "step1": {
+      "at": "2026-06-30 10:53:14",
+      "dropped_foreign_paragraphs": 3,
+      "error": null,
+      "image_count": 8,
+      "images_dir_relpath": "step1_md/Goring-Morris and Belfer Cohen.2014.The_southern_Levant_Cisjordan_during_the_Neolithic_period (1)/images",
+      "md_relpath": "step1_md/Goring-Morris and Belfer Cohen.2014.The_southern_Levant_Cisjordan_during_the_Neolithic_period (1)/Goring-Morris and Belfer Cohen.2014.The_southern_Levant_Cisjordan_during_the_Neolithic_period (1).md",
+      "status": "done"
+    },
+    "translation_md": {
+      "at": "2026-06-30 11:15:12",
+      "engine": "google",
+      "error": null,
+      "source_md_relpath": "step1_md/Goring-Morris and Belfer Cohen.2014.The_southern_Levant_Cisjordan_during_the_Neolithic_period (1)/Goring-Morris and Belfer Cohen.2014.The_southern_Levant_Cisjordan_during_the_Neolithic_period (1).md",
+      "status": "done",
+      "target_language": "iw",
+      "translated_md_relpath": "translated_md/Goring-Morris and Belfer Cohen.2014.The_southern_Levant_Cisjordan_during_the_Neolithic_period (1)/Goring-Morris and Belfer Cohen.2014.The_southern_Levant_Cisjordan_during_the_Neolithic_period (1).he.md"
+    }
+  },
+  "a4422be3cb9839cb6a1c8e0726531095e370580b88bfdff0bcad10c6aaf035aa": {
+    "duplicates": [],
+    "has_pictures": true,
+    "original_name": "Greenberg-ThirdMillenniumLevantine-1996.pdf",
+    "page_count": 21,
+    "sha256": "a4422be3cb9839cb6a1c8e0726531095e370580b88bfdff0bcad10c6aaf035aa",
+    "source_lang": "en",
+    "step1": {
+      "at": "2026-06-30 10:54:27",
+      "dropped_foreign_paragraphs": 0,
+      "error": null,
+      "image_count": 28,
+      "images_dir_relpath": "step1_md/Greenberg-ThirdMillenniumLevantine-1996/images",
+      "md_relpath": "step1_md/Greenberg-ThirdMillenniumLevantine-1996/Greenberg-ThirdMillenniumLevantine-1996.md",
+      "status": "done"
+    },
+    "translation_md": {
+      "at": "2026-06-30 11:15:28",
+      "engine": "google",
+      "error": null,
+      "source_md_relpath": "step1_md/Greenberg-ThirdMillenniumLevantine-1996/Greenberg-ThirdMillenniumLevantine-1996.md",
+      "status": "done",
+      "target_language": "iw",
+      "translated_md_relpath": "translated_md/Greenberg-ThirdMillenniumLevantine-1996/Greenberg-ThirdMillenniumLevantine-1996.he.md"
+    }
+  },
+  "a65a4ade753b4d8a7f40e3ceaec87e94fadaba3320a0e8d87595fef432e10d9a": {
+    "duplicates": [],
+    "has_pictures": true,
+    "original_name": "Koch.2023.Nomadism Ch.12.pdf",
+    "page_count": 32,
+    "sha256": "a65a4ade753b4d8a7f40e3ceaec87e94fadaba3320a0e8d87595fef432e10d9a",
+    "source_lang": "en",
+    "step1": {
+      "at": "2026-06-30 10:55:54",
+      "dropped_foreign_paragraphs": 11,
+      "error": null,
+      "image_count": 14,
+      "images_dir_relpath": "step1_md/Koch.2023.Nomadism Ch.12/images",
+      "md_relpath": "step1_md/Koch.2023.Nomadism Ch.12/Koch.2023.Nomadism Ch.12.md",
+      "status": "done"
+    },
+    "translation_md": {
+      "at": "2026-06-30 11:24:31",
+      "engine": "google",
+      "error": null,
+      "source_md_relpath": "step1_md/Koch.2023.Nomadism Ch.12/Koch.2023.Nomadism Ch.12.md",
+      "status": "done",
+      "target_language": "iw",
+      "translated_md_relpath": "translated_md/Koch.2023.Nomadism Ch.12/Koch.2023.Nomadism Ch.12.he.md"
+    }
+  },
+  "ad8c55d6425db3d56bea4c475a43b76b4ab4642ddbffdc0f1bf86d66a6f6f5c9": {
+    "duplicates": [],
+    "has_pictures": true,
+    "original_name": "Sergi.2023.Nomadism Ch.10.pdf",
+    "page_count": 48,
+    "sha256": "ad8c55d6425db3d56bea4c475a43b76b4ab4642ddbffdc0f1bf86d66a6f6f5c9",
+    "source_lang": "en",
+    "step1": {
+      "at": "2026-06-30 10:57:51",
+      "dropped_foreign_paragraphs": 21,
+      "error": null,
+      "image_count": 15,
+      "images_dir_relpath": "step1_md/Sergi.2023.Nomadism Ch.10/images",
+      "md_relpath": "step1_md/Sergi.2023.Nomadism Ch.10/Sergi.2023.Nomadism Ch.10.md",
+      "status": "done"
+    },
+    "translation_md": {
+      "at": "2026-06-30 11:43:38",
+      "error": "translation failed after 5 attempts: Request exception can happen due to an api connection error. Please check your connection and try again",
+      "status": "error",
+      "translated_md_relpath": null
+    }
+  },
+  "ae410d60faece9fd86667bb3e25904f2d2447ca44e3c6d1434b718f8e01c9029": {
+    "duplicates": [],
+    "has_pictures": true,
+    "original_name": "Bunimovitz.2015.LB Canaan from Archaeology of Society Chapter_14.pdf",
+    "page_count": 15,
+    "sha256": "ae410d60faece9fd86667bb3e25904f2d2447ca44e3c6d1434b718f8e01c9029",
+    "source_lang": "en",
+    "step1": {
+      "at": "2026-06-30 10:52:40",
+      "dropped_foreign_paragraphs": 0,
+      "error": null,
+      "image_count": 4,
+      "images_dir_relpath": "step1_md/Bunimovitz.2015.LB Canaan from Archaeology of Society Chapter_14/images",
+      "md_relpath": "step1_md/Bunimovitz.2015.LB Canaan from Archaeology of Society Chapter_14/Bunimovitz.2015.LB Canaan from Archaeology of Society Chapter_14.md",
+      "status": "done"
+    },
+    "translation_md": {
+      "at": "2026-06-30 11:09:21",
+      "engine": "google",
+      "error": null,
+      "source_md_relpath": "step1_md/Bunimovitz.2015.LB Canaan from Archaeology of Society Chapter_14/Bunimovitz.2015.LB Canaan from Archaeology of Society Chapter_14.md",
+      "status": "done",
+      "target_language": "iw",
+      "translated_md_relpath": "translated_md/Bunimovitz.2015.LB Canaan from Archaeology of Society Chapter_14/Bunimovitz.2015.LB Canaan from Archaeology of Society Chapter_14.he.md"
+    }
+  },
+  "c0cc1cdf138e2fb81ddcd2e8d2cb2ff79fbaed89624baaf70b72c6a671305d24": {
+    "duplicates": [],
+    "has_pictures": true,
+    "original_name": "Greenberg_R_1999_Uniformity_as_Ideology.pdf",
+    "page_count": 17,
+    "sha256": "c0cc1cdf138e2fb81ddcd2e8d2cb2ff79fbaed89624baaf70b72c6a671305d24",
+    "source_lang": null,
+    "step1": {
+      "at": "2026-06-30 10:54:42",
+      "dropped_foreign_paragraphs": 0,
+      "error": null,
+      "image_count": 0,
+      "images_dir_relpath": "step1_md/Greenberg_R_1999_Uniformity_as_Ideology/images",
+      "md_relpath": "step1_md/Greenberg_R_1999_Uniformity_as_Ideology/Greenberg_R_1999_Uniformity_as_Ideology.md",
+      "status": "done"
+    },
+    "translation_md": {
+      "at": "2026-06-30 11:15:28",
+      "engine": "google",
+      "error": null,
+      "source_md_relpath": "step1_md/Greenberg_R_1999_Uniformity_as_Ideology/Greenberg_R_1999_Uniformity_as_Ideology.md",
+      "status": "done",
+      "target_language": "iw",
+      "translated_md_relpath": "translated_md/Greenberg_R_1999_Uniformity_as_Ideology/Greenberg_R_1999_Uniformity_as_Ideology.he.md"
+    }
+  },
+  "f35a277b686abf8381c0700f2ed23cac9287d29c712735f4d95f598cf108d0e0": {
+    "duplicates": [],
+    "has_pictures": true,
+    "original_name": "התקופה הנאוליתית הקדומה בירקנפלד קדמוניות 2025.pdf",
+    "page_count": 8,
+    "sha256": "f35a277b686abf8381c0700f2ed23cac9287d29c712735f4d95f598cf108d0e0",
+    "source_lang": "he",
+    "step1": {
+      "at": "2026-06-30 10:58:48",
+      "dropped_foreign_paragraphs": 21,
+      "error": null,
+      "image_count": 7,
+      "images_dir_relpath": "step1_md/התקופה הנאוליתית הקדומה בירקנפלד קדמוניות 2025/images",
+      "md_relpath": "step1_md/התקופה הנאוליתית הקדומה בירקנפלד קדמוניות 2025/התקופה הנאוליתית הקדומה בירקנפלד קדמוניות 2025.md",
+      "status": "done"
+    },
+    "translation_md": {
+      "at": "2026-06-30 11:35:40",
+      "engine": "google",
+      "error": null,
+      "source_md_relpath": "step1_md/התקופה הנאוליתית הקדומה בירקנפלד קדמוניות 2025/התקופה הנאוליתית הקדומה בירקנפלד קדמוניות 2025.md",
+      "status": "already_hebrew",
+      "target_language": "iw",
+      "translated_md_relpath": null
+    }
+  },
+  "feb6e025cee4a0a52899ecc7c0fadb502240b295c2c1319d1d5897f0bb44057f": {
+    "duplicates": [],
+    "has_pictures": true,
+    "original_name": "01 Shadman - Ramat Bet Shemesh Statutory interven_260309_145717.pdf",
+    "page_count": 30,
+    "sha256": "feb6e025cee4a0a52899ecc7c0fadb502240b295c2c1319d1d5897f0bb44057f",
+    "source_lang": "en",
+    "step1": {
+      "at": "2026-06-30 10:51:40",
+      "dropped_foreign_paragraphs": 1,
+      "error": null,
+      "image_count": 6,
+      "images_dir_relpath": "step1_md/01 Shadman - Ramat Bet Shemesh Statutory interven_260309_145717/images",
+      "md_relpath": "step1_md/01 Shadman - Ramat Bet Shemesh Statutory interven_260309_145717/01 Shadman - Ramat Bet Shemesh Statutory interven_260309_145717.md",
+      "status": "done"
+    },
+    "translation_md": {
+      "at": "2026-06-30 12:11:39",
+      "error": "translation failed: Request exception can happen due to an api connection error. Please check your connection and try again",
+      "partial_blocks_done": 178,
+      "partial_relpath": "translated_md/01 Shadman - Ramat Bet Shemesh Statutory interven_260309_145717/01 Shadman - Ramat Bet Shemesh Statutory interven_260309_145717.partial.json",
+      "status": "error",
+      "translated_md_relpath": null
     }
   }
 }
