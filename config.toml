@@ -1,0 +1,69 @@
+# Central configuration for the translate_articles project.
+#
+# All paths are resolved relative to the repository root (the folder that
+# contains this file). Use forward slashes; both Windows and POSIX work.
+#
+# Edit values here instead of changing the scripts. Anything not set falls
+# back to the defaults baked into _config.py.
+
+[paths]
+# Where to download PDFs from Google Drive, and where translate_articles.py
+# looks for input PDFs.
+source_dir       = "to_translate"
+
+# Where translated outputs land. For each translated PDF we create
+# <translated_dir>/<basename>/ containing the original PDF + the *.he.docx.
+translated_dir   = "translated"
+
+# Where PDFs that failed translation are moved to.
+error_dir        = "error_translate"
+
+# Durable record of every file we've seen, keyed by SHA-256 so duplicates
+# are never re-translated.
+log_file         = "translation_log.json"
+
+# Auto-generated browseable table.
+index_file       = "index.html"
+
+[drive]
+# Google Drive folder containing the source PDFs. Used by _download_drive.py.
+folder_url       = "https://drive.google.com/drive/folders/1MxUdFWGuc13JEGEZlnCvtPGMzXXRdCh_"
+
+# When true, only files ending in .pdf are downloaded; Google Docs / sheets
+# / etc. in the folder are skipped.
+pdfs_only        = true
+
+[translation]
+# Target language for the translation. "iw" is the legacy Google code for
+# Hebrew; "he" also works.
+target_language     = "iw"
+
+# Translation backend. Only "google" (free deep_translator backend) is
+# implemented today. Other choices are placeholders for future engines
+# (e.g. "azure", "openai").
+engine              = "google"
+
+# Google Translate caps a single request at ~5000 characters. We chunk
+# below that with some headroom for URL-encoding overhead.
+chunk_char_limit    = 4500
+
+# How many times to retry a failing translation chunk before giving up on
+# the whole document.
+retries             = 3
+
+# Initial backoff in seconds between retries; multiplied by attempt number.
+retry_backoff_seconds = 2.0
+
+# If true, PDFs whose detected source language is already Hebrew are
+# marked "already_hebrew" and only the original is copied to translated/.
+skip_already_hebrew = true
+
+[docx]
+# Font used for the Hebrew DOCX output.
+font_name        = "Arial"
+font_size_pt     = 11
+
+[network]
+# The corporate proxy on this machine performs TLS inspection with a
+# self-signed root. Set to false on machines with a working CA bundle.
+disable_tls_verify = true

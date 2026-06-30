@@ -1,58 +1,33 @@
-"""Download only the PDF files from a public Google Drive folder.
+"""Download only the PDF files from the configured Google Drive folder.
+
+All settings (folder URL, output directory, TLS handling, PDFs-only flag)
+come from ``config.toml`` via ``_config.py``. Edit the config file instead
+of this script.
 
 Uses gdown's internal embedded-folder-view parser to list the folder, then
-downloads each PDF individually with `gdown.download`. Non-PDF entries
-(e.g. Google Docs) are skipped because we only care about source articles.
-
-SSL verification is disabled because the local environment performs TLS
-inspection with a self-signed root certificate that Python's CA bundle
-does not trust.
+downloads each PDF individually with ``gdown.download``. Non-PDF entries
+(e.g. Google Docs) are skipped when ``[drive].pdfs_only`` is true.
 """
 
 from __future__ import annotations
 
-import os
 import sys
-import warnings
 
-import urllib3
-import requests
+from _config import CONFIG, install_tls_bypass
 
-warnings.simplefilter("ignore", urllib3.exceptions.InsecureRequestWarning)
-
-_orig_session_request = requests.Session.request
-
-
-def _no_verify_session_request(self, method, url, **kwargs):
-    kwargs["verify"] = False
-    return _orig_session_request(self, method, url, **kwargs)
-
-
-requests.Session.request = _no_verify_session_request
-
-
-_orig_top_request = requests.api.request
-
-
-def _no_verify_top_request(method, url, **kwargs):
-    kwargs["verify"] = False
-    return _orig_top_request(method, url, **kwargs)
-
-
-requests.api.request = _no_verify_top_request
-
+install_tls_bypass()
 
 import gdown  # noqa: E402
 from gdown.download import _get_session, _sanitize_filename  # noqa: E402
 from gdown.download_folder import _parse_embedded_folder_view  # noqa: E402
 
 
-FOLDER_ID = "1MxUdFWGuc13JEGEZlnCvtPGMzXXRdCh_"
-OUTPUT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "to_translate")
-
-
 def main() -> int:
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    output_dir = CONFIG.source_dir
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    folder_id = CONFIG.folder_id
+    verify_flag = not CONFIG.disable_tls_verify
 
     user_agent = (
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
@@ -61,40 +36,43 @@ def main() -> int:
     )
     sess, _ = _get_session(proxy=None, use_cookies=False, user_agent=user_agent)
 
-    print(f"Listing folder {FOLDER_ID}", flush=True)
+    print(f"Listing folder {folder_id}", flush=True)
     _, children = _parse_embedded_folder_view(
-        sess=sess, folder_id=FOLDER_ID, verify=False
+        sess=sess, folder_id=folder_id, verify=verify_flag
     )
 
-    pdfs: list[tuple[str, str]] = []
+    targets: list[tuple[str, str]] = []
     skipped: list[tuple[str, str]] = []
     for file_id, file_name, file_type in children:
         if file_type == "application/vnd.google-apps.folder":
             skipped.append((file_id, f"[folder] {file_name}"))
             continue
-        if not file_name.lower().endswith(".pdf"):
+        if CONFIG.drive_pdfs_only and not file_name.lower().endswith(".pdf"):
             skipped.append((file_id, file_name))
             continue
-        pdfs.append((file_id, _sanitize_filename(filename=file_name)))
+        targets.append((file_id, _sanitize_filename(filename=file_name)))
 
-    print(f"Found {len(pdfs)} PDF files; skipping {len(skipped)} non-PDF entries.")
+    print(
+        f"Found {len(targets)} target files; skipping {len(skipped)} entries "
+        f"(pdfs_only={CONFIG.drive_pdfs_only})."
+    )
     for fid, name in skipped:
         print(f"  skip: {name} ({fid})")
 
     failures: list[tuple[str, str, str]] = []
-    for idx, (file_id, file_name) in enumerate(pdfs, start=1):
-        target = os.path.join(OUTPUT_DIR, file_name)
-        if os.path.exists(target) and os.path.getsize(target) > 0:
-            print(f"[{idx}/{len(pdfs)}] already exists, skipping: {file_name}")
+    for idx, (file_id, file_name) in enumerate(targets, start=1):
+        target = output_dir / file_name
+        if target.exists() and target.stat().st_size > 0:
+            print(f"[{idx}/{len(targets)}] already exists, skipping: {file_name}")
             continue
-        print(f"[{idx}/{len(pdfs)}] downloading: {file_name}", flush=True)
+        print(f"[{idx}/{len(targets)}] downloading: {file_name}", flush=True)
         try:
             result = gdown.download(
                 url=f"https://drive.google.com/uc?id={file_id}",
-                output=target,
+                output=str(target),
                 quiet=False,
                 use_cookies=False,
-                verify=False,
+                verify=verify_flag,
             )
             if not result:
                 failures.append((file_id, file_name, "gdown returned None"))
@@ -107,7 +85,7 @@ def main() -> int:
         for fid, name, err in failures:
             print(f"  {name} ({fid}): {err}")
         return 1
-    print("\nAll PDFs downloaded successfully.")
+    print("\nAll target files downloaded successfully.")
     return 0
 
 

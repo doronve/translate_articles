@@ -1,25 +1,28 @@
-"""Translate PDFs in ``to_translate/`` into Hebrew DOCX files.
+"""Translate PDFs in the configured source dir into Hebrew DOCX files.
+
+All paths and translation settings are read from ``config.toml`` via
+``_config.py``. Edit the config file instead of this script.
 
 For each PDF the pipeline:
 
-1. Computes a SHA-256 hash and looks it up in ``translation_log.json`` so
-   the same content is never translated twice (even if filenames differ).
+1. Computes a SHA-256 hash and looks it up in the log so the same content
+   is never translated twice (even if filenames differ).
 2. Extracts page text and detects whether the PDF contains embedded images.
 3. Detects the source language. PDFs that already look Hebrew are skipped
    (marked ``already_hebrew``) and only their original is mirrored.
-4. Translates the text page-by-page in <=4500 char chunks via free Google
-   Translate (``deep_translator``).
+4. Translates the text page-by-page in chunks via free Google Translate
+   (``deep_translator``).
 5. Writes a Hebrew DOCX (right-to-left) alongside a copy of the original
-   PDF into ``translated/<basename>/``.
-6. On failure, moves the original PDF into ``error_translate/`` and records
-   the error in the log.
-7. Regenerates ``index.html`` with an Original | Translated | Has pictures
+   PDF into ``<translated_dir>/<basename>/``.
+6. On failure, moves the original PDF into the configured error dir and
+   records the error in the log.
+7. Regenerates the HTML index with an Original | Translated | Has pictures
    table.
 
 Usage:
     py -3.13 translate_articles.py            # process everything pending
     py -3.13 translate_articles.py --limit 1  # just one file (for testing)
-    py -3.13 translate_articles.py --only "Gopher et al. 2001*"  # glob match
+    py -3.13 translate_articles.py --only "Gopher et al. 2001*"
 """
 
 from __future__ import annotations
@@ -29,41 +32,16 @@ import fnmatch
 import hashlib
 import html
 import json
-import os
 import shutil
 import sys
 import time
 import traceback
-import warnings
 from dataclasses import dataclass, field
 from pathlib import Path
 
-import urllib3
-import requests
+from _config import CONFIG, ROOT, install_tls_bypass
 
-warnings.simplefilter("ignore", urllib3.exceptions.InsecureRequestWarning)
-
-# --- TLS bypass for the corporate proxy (same trick as _download_drive.py) ---
-_orig_session_request = requests.Session.request
-
-
-def _no_verify_session_request(self, method, url, **kwargs):
-    kwargs["verify"] = False
-    return _orig_session_request(self, method, url, **kwargs)
-
-
-requests.Session.request = _no_verify_session_request
-
-_orig_top_request = requests.api.request
-
-
-def _no_verify_top_request(method, url, **kwargs):
-    kwargs["verify"] = False
-    return _orig_top_request(method, url, **kwargs)
-
-
-requests.api.request = _no_verify_top_request
-
+install_tls_bypass()
 
 import fitz  # PyMuPDF  # noqa: E402
 from deep_translator import GoogleTranslator  # noqa: E402
@@ -75,18 +53,6 @@ from docx.shared import Pt  # noqa: E402
 from langdetect import DetectorFactory, detect  # noqa: E402
 
 DetectorFactory.seed = 0  # deterministic language detection
-
-
-ROOT = Path(__file__).resolve().parent
-SRC_DIR = ROOT / "to_translate"
-OUT_DIR = ROOT / "translated"
-ERR_DIR = ROOT / "error_translate"
-LOG_PATH = ROOT / "translation_log.json"
-INDEX_PATH = ROOT / "index.html"
-
-# Google Translate caps a single request at ~5000 characters. Stay under that
-# with some headroom for URL-encoding overhead.
-CHUNK_CHAR_LIMIT = 4500
 
 
 # ---------------------------------------------------------------------------
@@ -102,8 +68,8 @@ class LogEntry:
     has_pictures: bool = False
     page_count: int = 0
     source_lang: str | None = None
-    translated_relpath: str | None = None  # relative to repo root
-    original_relpath: str | None = None  # relative to repo root
+    translated_relpath: str | None = None
+    original_relpath: str | None = None
     error: str | None = None
     duplicates: list[str] = field(default_factory=list)
     translated_at: str | None = None
@@ -141,16 +107,17 @@ class LogEntry:
 
 
 def load_log() -> dict[str, LogEntry]:
-    if not LOG_PATH.exists():
+    if not CONFIG.log_file.exists():
         return {}
-    with LOG_PATH.open("r", encoding="utf-8") as fh:
+    with CONFIG.log_file.open("r", encoding="utf-8") as fh:
         raw = json.load(fh)
     return {sha: LogEntry.from_dict(entry) for sha, entry in raw.items()}
 
 
 def save_log(log: dict[str, LogEntry]) -> None:
     serializable = {sha: entry.to_dict() for sha, entry in log.items()}
-    with LOG_PATH.open("w", encoding="utf-8") as fh:
+    CONFIG.log_file.parent.mkdir(parents=True, exist_ok=True)
+    with CONFIG.log_file.open("w", encoding="utf-8") as fh:
         json.dump(serializable, fh, ensure_ascii=False, indent=2, sort_keys=True)
 
 
@@ -190,7 +157,7 @@ def detect_language(sample_text: str) -> str | None:
         return None
 
 
-def chunk_text(text: str, limit: int = CHUNK_CHAR_LIMIT) -> list[str]:
+def chunk_text(text: str, limit: int) -> list[str]:
     """Split text into <=limit char chunks on paragraph/sentence boundaries."""
     if len(text) <= limit:
         return [text] if text else []
@@ -206,7 +173,6 @@ def chunk_text(text: str, limit: int = CHUNK_CHAR_LIMIT) -> list[str]:
         if buf:
             chunks.append(buf)
             buf = ""
-        # paragraph itself may be too long; sentence-split it
         if len(para) <= limit:
             buf = para
             continue
@@ -218,7 +184,6 @@ def chunk_text(text: str, limit: int = CHUNK_CHAR_LIMIT) -> list[str]:
             else:
                 if buf:
                     chunks.append(buf)
-                # if a single "sentence" is still too long, hard-wrap it
                 while len(sent) > limit:
                     chunks.append(sent[:limit])
                     sent = sent[limit:]
@@ -229,27 +194,36 @@ def chunk_text(text: str, limit: int = CHUNK_CHAR_LIMIT) -> list[str]:
 
 
 class _Translator:
-    """Thin wrapper that retries Google Translate on transient failures."""
+    """Thin wrapper that retries the configured backend on transient failures."""
 
-    def __init__(self, target: str = "iw"):
-        # deep-translator uses "iw" (legacy) or "he" depending on version.
-        # GoogleTranslator accepts both via its language map.
-        self.target = target
-        self._engine = GoogleTranslator(source="auto", target=target)
+    def __init__(self):
+        if CONFIG.engine != "google":
+            raise NotImplementedError(
+                f"translation engine '{CONFIG.engine}' is not implemented yet; "
+                "set [translation].engine = \"google\" in config.toml"
+            )
+        self.target = CONFIG.target_language
+        self.retries = CONFIG.retries
+        self.backoff = CONFIG.retry_backoff_seconds
+        self._engine = GoogleTranslator(source="auto", target=self.target)
 
-    def translate(self, text: str, retries: int = 3, backoff: float = 2.0) -> str:
+    def translate(self, text: str) -> str:
         if not text or not text.strip():
             return ""
         last_exc: Exception | None = None
-        for attempt in range(retries):
+        for attempt in range(self.retries):
             try:
                 return self._engine.translate(text) or ""
             except Exception as exc:  # noqa: BLE001
                 last_exc = exc
-                wait = backoff * (attempt + 1)
-                print(f"    translate retry {attempt + 1}/{retries} after {wait:.1f}s ({exc})", flush=True)
+                wait = self.backoff * (attempt + 1)
+                print(
+                    f"    translate retry {attempt + 1}/{self.retries} "
+                    f"after {wait:.1f}s ({exc})",
+                    flush=True,
+                )
                 time.sleep(wait)
-        raise RuntimeError(f"translation failed after {retries} attempts: {last_exc}")
+        raise RuntimeError(f"translation failed after {self.retries} attempts: {last_exc}")
 
 
 def translate_pages(pages: list[str], translator: _Translator) -> list[str]:
@@ -259,11 +233,12 @@ def translate_pages(pages: list[str], translator: _Translator) -> list[str]:
         if not page_text:
             translated_pages.append("")
             continue
-        chunks = chunk_text(page_text)
+        chunks = chunk_text(page_text, CONFIG.chunk_char_limit)
         out_parts: list[str] = []
         for chunk_idx, chunk in enumerate(chunks, start=1):
             print(
-                f"    page {page_idx}/{len(pages)} chunk {chunk_idx}/{len(chunks)} ({len(chunk)} chars)",
+                f"    page {page_idx}/{len(pages)} chunk {chunk_idx}/{len(chunks)} "
+                f"({len(chunk)} chars)",
                 flush=True,
             )
             out_parts.append(translator.translate(chunk))
@@ -299,10 +274,9 @@ def write_hebrew_docx(
     doc = Document()
 
     style = doc.styles["Normal"]
-    style.font.name = "Arial"
-    style.font.size = Pt(11)
+    style.font.name = CONFIG.docx_font_name
+    style.font.size = Pt(CONFIG.docx_font_size_pt)
 
-    # Make the default paragraph format RTL.
     title_p = doc.add_heading(title, level=1)
     title_p.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
     _set_rtl(title_p)
@@ -429,7 +403,8 @@ def regenerate_index(log: dict[str, LogEntry]) -> None:
 </body>
 </html>
 """
-    INDEX_PATH.write_text(page, encoding="utf-8")
+    CONFIG.index_file.parent.mkdir(parents=True, exist_ok=True)
+    CONFIG.index_file.write_text(page, encoding="utf-8")
 
 
 # ---------------------------------------------------------------------------
@@ -449,6 +424,13 @@ def safe_folder_name(name: str) -> str:
     return cleaned or "document"
 
 
+def _relpath_from_root(p: Path) -> str:
+    try:
+        return str(p.relative_to(ROOT)).replace("\\", "/")
+    except ValueError:
+        return str(p).replace("\\", "/")
+
+
 def process_pdf(
     pdf_path: Path,
     log: dict[str, LogEntry],
@@ -461,16 +443,24 @@ def process_pdf(
     if existing is not None:
         if existing.original_name != pdf_path.name and pdf_path.name not in existing.duplicates:
             existing.duplicates.append(pdf_path.name)
-        print(f"  already in log as '{existing.original_name}' (status={existing.status}); skipping.", flush=True)
+        print(
+            f"  already in log as '{existing.original_name}' "
+            f"(status={existing.status}); skipping.",
+            flush=True,
+        )
         return existing
 
     pages, has_pictures, page_count = extract_pages_and_images(pdf_path)
     full_text = "\n".join(pages)
     src_lang = detect_language(full_text)
-    print(f"  pages={page_count} has_pictures={has_pictures} detected_lang={src_lang}", flush=True)
+    print(
+        f"  pages={page_count} has_pictures={has_pictures} detected_lang={src_lang}",
+        flush=True,
+    )
 
-    if src_lang in {"he", "iw"}:
-        dest_folder = OUT_DIR / safe_folder_name(pdf_path.name)
+    is_hebrew = src_lang in {"he", "iw"}
+    if is_hebrew and CONFIG.skip_already_hebrew:
+        dest_folder = CONFIG.translated_dir / safe_folder_name(pdf_path.name)
         dest_folder.mkdir(parents=True, exist_ok=True)
         dest_pdf = dest_folder / pdf_path.name
         shutil.copy2(pdf_path, dest_pdf)
@@ -482,7 +472,7 @@ def process_pdf(
             page_count=page_count,
             source_lang=src_lang,
             translated_relpath=None,
-            original_relpath=str(dest_pdf.relative_to(ROOT)).replace("\\", "/"),
+            original_relpath=_relpath_from_root(dest_pdf),
             translated_at=time.strftime("%Y-%m-%d %H:%M:%S"),
         )
         log[digest] = entry
@@ -492,11 +482,11 @@ def process_pdf(
     try:
         translated_pages = translate_pages(pages, translator)
     except Exception as exc:  # noqa: BLE001
-        ERR_DIR.mkdir(parents=True, exist_ok=True)
-        err_dest = ERR_DIR / pdf_path.name
+        CONFIG.error_dir.mkdir(parents=True, exist_ok=True)
+        err_dest = CONFIG.error_dir / pdf_path.name
         try:
             shutil.move(str(pdf_path), str(err_dest))
-            err_rel = str(err_dest.relative_to(ROOT)).replace("\\", "/")
+            err_rel = _relpath_from_root(err_dest)
         except Exception:
             err_rel = None
         traceback.print_exc()
@@ -516,7 +506,7 @@ def process_pdf(
         print(f"  FAILED: {exc}; moved to error_translate/.", flush=True)
         return entry
 
-    dest_folder = OUT_DIR / safe_folder_name(pdf_path.name)
+    dest_folder = CONFIG.translated_dir / safe_folder_name(pdf_path.name)
     dest_folder.mkdir(parents=True, exist_ok=True)
     dest_pdf = dest_folder / pdf_path.name
     shutil.copy2(pdf_path, dest_pdf)
@@ -540,12 +530,12 @@ def process_pdf(
         has_pictures=has_pictures,
         page_count=page_count,
         source_lang=src_lang,
-        translated_relpath=str(dest_docx.relative_to(ROOT)).replace("\\", "/"),
-        original_relpath=str(dest_pdf.relative_to(ROOT)).replace("\\", "/"),
+        translated_relpath=_relpath_from_root(dest_docx),
+        original_relpath=_relpath_from_root(dest_pdf),
         translated_at=metadata["translated_at"],
     )
     log[digest] = entry
-    print(f"  wrote {dest_docx.relative_to(ROOT)}", flush=True)
+    print(f"  wrote {_relpath_from_root(dest_docx)}", flush=True)
     return entry
 
 
@@ -556,12 +546,12 @@ def main() -> int:
     parser.add_argument("--reset-errors", action="store_true", help="Retry files previously marked as error")
     args = parser.parse_args()
 
-    if not SRC_DIR.exists():
-        print(f"Source dir not found: {SRC_DIR}", file=sys.stderr)
+    if not CONFIG.source_dir.exists():
+        print(f"Source dir not found: {CONFIG.source_dir}", file=sys.stderr)
         return 2
 
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
-    ERR_DIR.mkdir(parents=True, exist_ok=True)
+    CONFIG.translated_dir.mkdir(parents=True, exist_ok=True)
+    CONFIG.error_dir.mkdir(parents=True, exist_ok=True)
 
     log = load_log()
 
@@ -570,9 +560,12 @@ def main() -> int:
             if entry.status == "error":
                 del log[sha]
 
-    translator = _Translator(target="iw")
+    translator = _Translator()
 
-    pdfs = sorted(p for p in SRC_DIR.iterdir() if p.is_file() and p.suffix.lower() == ".pdf")
+    pdfs = sorted(
+        p for p in CONFIG.source_dir.iterdir()
+        if p.is_file() and p.suffix.lower() == ".pdf"
+    )
     if args.only:
         pdfs = [p for p in pdfs if fnmatch.fnmatch(p.name, args.only)]
 
@@ -581,8 +574,7 @@ def main() -> int:
         for pdf in pdfs:
             digest = sha256_of(pdf)
             if digest in log and log[digest].status != "error":
-                # Already handled; still surface in log + index but don't re-translate.
-                process_pdf(pdf, log, translator)  # adds to duplicates / no-ops
+                process_pdf(pdf, log, translator)
                 continue
             process_pdf(pdf, log, translator)
             processed += 1
@@ -592,8 +584,8 @@ def main() -> int:
     finally:
         save_log(log)
         regenerate_index(log)
-        print(f"\nLog: {LOG_PATH.relative_to(ROOT)}", flush=True)
-        print(f"Index: {INDEX_PATH.relative_to(ROOT)}", flush=True)
+        print(f"\nLog: {_relpath_from_root(CONFIG.log_file)}", flush=True)
+        print(f"Index: {_relpath_from_root(CONFIG.index_file)}", flush=True)
 
     return 0
 

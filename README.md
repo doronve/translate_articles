@@ -4,6 +4,10 @@ Hebrew translations of archaeology articles sourced from a shared Google Drive f
 
 ## Layout
 
+- `config.toml` — **all tunable parameters** (paths, Drive URL, translation
+  settings, network options). Edit this file instead of changing the scripts.
+- `_config.py` — loader for `config.toml` (falls back to built-in defaults if
+  the file is missing) and shared TLS-bypass helper for the corporate proxy.
 - `to_translate/` — PDF articles mirrored from the shared Google Drive folder
   [‫מאמרים ותרגומיהם‬](https://drive.google.com/drive/folders/1MxUdFWGuc13JEGEZlnCvtPGMzXXRdCh_).
   Non-PDF entries (Google Docs translations / summaries) are intentionally excluded here.
@@ -17,6 +21,34 @@ Hebrew translations of archaeology articles sourced from a shared Google Drive f
   Original | Translated | Has pictures | Page count | Source language | Translated at.
 - `_download_drive.py` — pulls the PDFs from Drive into `to_translate/`.
 - `translate_articles.py` — the translation pipeline.
+
+## Configuration
+
+All paths and translation settings live in `config.toml`:
+
+| Section | Key | Purpose |
+|---|---|---|
+| `[paths]` | `source_dir` | where PDFs are read from (and downloaded to) |
+| `[paths]` | `translated_dir` | where successful translations land |
+| `[paths]` | `error_dir` | where failed PDFs are moved |
+| `[paths]` | `log_file` | SHA-256-keyed dedup + status log (JSON) |
+| `[paths]` | `index_file` | generated HTML index |
+| `[drive]` | `folder_url` | Google Drive folder to mirror |
+| `[drive]` | `pdfs_only` | skip non-PDF entries (Docs, sheets, …) |
+| `[translation]` | `target_language` | target lang code (`iw` / `he`) |
+| `[translation]` | `engine` | translation backend (currently `google`) |
+| `[translation]` | `chunk_char_limit` | max chars per request |
+| `[translation]` | `retries` | retry attempts per chunk |
+| `[translation]` | `retry_backoff_seconds` | initial backoff (× attempt) |
+| `[translation]` | `skip_already_hebrew` | skip PDFs already in Hebrew |
+| `[docx]` | `font_name`, `font_size_pt` | DOCX output font |
+| `[network]` | `disable_tls_verify` | bypass corporate TLS inspection |
+
+Inspect the resolved config any time:
+
+```powershell
+py -3.13 _config.py
+```
 
 ## Setup
 
@@ -33,8 +65,9 @@ $env:PYTHONIOENCODING = "utf-8"
 $env:PYTHONUTF8 = "1"
 ```
 
-SSL verification is disabled in both helpers because the local network performs
-TLS inspection with a self-signed root certificate.
+SSL verification is disabled in both helpers (controlled by
+`[network].disable_tls_verify` in `config.toml`) because the local network
+performs TLS inspection with a self-signed root certificate.
 
 ## Refresh PDFs from Google Drive
 
