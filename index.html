@@ -4,33 +4,232 @@
 <meta charset="utf-8">
 <title>מאמרים מתורגמים</title>
 <style>
-  body { font-family: Arial, sans-serif; margin: 24px; }
-  h1 { font-size: 22px; }
-  table { border-collapse: collapse; width: 100%; }
-  th, td { border: 1px solid #ccc; padding: 8px; text-align: right; vertical-align: top; }
-  th { background: #f4f4f4; }
-  tr:nth-child(even) td { background: #fafafa; }
-  a { color: #1a4f8b; text-decoration: none; }
-  a:hover { text-decoration: underline; }
-  .err { color: #b00020; }
+:root { color-scheme: light; }
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  margin: 24px auto;
+  max-width: 1400px;
+  color: #1f2328;
+  background: #fbfbfc;
+}
+h1 { font-size: 22px; margin: 0 0 6px; }
+.subtitle { color: #555; margin: 0 0 16px; font-size: 13px; }
+.summary { display: flex; gap: 18px; flex-wrap: wrap; margin: 0 0 20px; }
+.summary div {
+  background: #fff;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 13px;
+}
+.summary strong { font-size: 18px; display: block; }
+table {
+  border-collapse: collapse;
+  width: 100%;
+  background: #fff;
+  font-size: 13px;
+}
+th, td {
+  border: 1px solid #d0d7de;
+  padding: 8px 10px;
+  text-align: right;
+  vertical-align: top;
+}
+th { background: #f6f8fa; font-weight: 600; }
+tr:nth-child(even) td { background: #fafbfc; }
+.num { text-align: center; }
+a { color: #0969da; text-decoration: none; }
+a:hover { text-decoration: underline; }
+.sha { color: #999; font-size: 11px; font-family: ui-monospace, Consolas, monospace; }
+.when { color: #777; font-size: 11px; margin-top: 4px; }
+.missing { color: #999; font-style: italic; }
+.pill {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+.pill.ok      { background: #dafbe1; color: #0a5a17; border-color: #b5e6c0; }
+.pill.skip    { background: #ddf4ff; color: #054168; border-color: #bcd9ed; }
+.pill.warn    { background: #fff8c5; color: #6c4e00; border-color: #f0d77b; }
+.pill.err     { background: #ffebe9; color: #8b1010; border-color: #ffaba3; }
+.pill.pending { background: #eaeef2; color: #57606a; border-color: #d0d7de; }
 </style>
 </head>
 <body>
 <h1>מאמרים מתורגמים</h1>
-<p>סה"כ רשומות: 1</p>
+<p class="subtitle">נוצר אוטומטית ב-2026-06-30 14:24:10 ·
+<code dir="ltr">generate_index.py</code></p>
+
+<div class="summary">
+  <div><strong>13</strong>סה"כ מסמכים</div>
+  <div><strong>7</strong>תורגמו לעברית</div>
+  <div><strong>4</strong>כבר בעברית</div>
+  <div><strong>2</strong>שגיאות</div>
+  <div><strong>0</strong>ממתינים</div>
+  <div><strong>1</strong>עברו OCR</div>
+</div>
+
 <table>
 <thead>
 <tr>
-  <th>מסמך מקור</th>
-  <th>תרגום</th>
-  <th>מכיל תמונות</th>
-  <th>מספר עמודים</th>
+  <th>מסמך מקור (PDF)</th>
+  <th>שלב 1: Markdown באנגלית</th>
+  <th>שלב 2: Markdown בעברית</th>
+  <th>עמודים</th>
+  <th>תמונות</th>
   <th>שפת מקור</th>
-  <th>תורגם ב-</th>
+  <th>OCR</th>
+  <th>שלב 1 (חילוץ)</th>
+  <th>שלב 2 (תרגום)</th>
 </tr>
 </thead>
 <tbody>
-<tr><td><a href="translated/Gopher et al. 2001.The_when_the_where_and_the_why_of_the_Ne/Gopher et al. 2001.The_when_the_where_and_the_why_of_the_Ne.pdf">Gopher et al. 2001.The_when_the_where_and_the_why_of_the_Ne.pdf</a></td><td><a href="translated/Gopher et al. 2001.The_when_the_where_and_the_why_of_the_Ne/Gopher et al. 2001.The_when_the_where_and_the_why_of_the_Ne.he.docx">DOCX</a></td><td>כן</td><td>14</td><td>en</td><td>2026-06-29 16:55:13</td></tr>
+<tr>
+  <td><a href="to_translate/01%20Shadman%20-%20Ramat%20Bet%20Shemesh%20Statutory%20interven_260309_145717.pdf">01 Shadman - Ramat Bet Shemesh Statutory interven_260309_145717.pdf</a><div class="sha">feb6e025</div></td>
+  <td><a href="step1_md/01%20Shadman%20-%20Ramat%20Bet%20Shemesh%20Statutory%20interven_260309_145717/01%20Shadman%20-%20Ramat%20Bet%20Shemesh%20Statutory%20interven_260309_145717.md">Markdown (אנגלית)</a></td>
+  <td>—</td>
+  <td class="num">30</td>
+  <td>כן (6)</td>
+  <td>en</td>
+  <td>—</td>
+  <td><span class="pill ok">done</span><div class="when">2026-06-30 10:51:40</div></td>
+  <td><span class="pill err" title="translation failed: Request exception can happen due to an api connection error. Please check your connection and try again">error</span><div class="when">2026-06-30 12:11:39</div></td>
+</tr>
+<tr>
+  <td><a href="to_translate/_%20%20%D7%92%D7%A6%D7%95%D7%91%20%D7%94%D7%AA%D7%A7%D7%95%D7%A4%D7%94%20%D7%94%D7%9B%D7%9C%D7%A7%D7%95%D7%9C%D7%99%D7%AA%D7%99%D7%AA%20%D7%94%D7%A7%D7%93%D7%95%D7%9E%D7%94%20170-57-66.pdf">_  גצוב התקופה הכלקוליתית הקדומה 170-57-66.pdf</a><div class="sha">1c0bb31e</div></td>
+  <td><a href="step1_md/_%20%20%D7%92%D7%A6%D7%95%D7%91%20%D7%94%D7%AA%D7%A7%D7%95%D7%A4%D7%94%20%D7%94%D7%9B%D7%9C%D7%A7%D7%95%D7%9C%D7%99%D7%AA%D7%99%D7%AA%20%D7%94%D7%A7%D7%93%D7%95%D7%9E%D7%94%20170-57-66/_%20%20%D7%92%D7%A6%D7%95%D7%91%20%D7%94%D7%AA%D7%A7%D7%95%D7%A4%D7%94%20%D7%94%D7%9B%D7%9C%D7%A7%D7%95%D7%9C%D7%99%D7%AA%D7%99%D7%AA%20%D7%94%D7%A7%D7%93%D7%95%D7%9E%D7%94%20170-57-66.md">Markdown (אנגלית)</a></td>
+  <td>—</td>
+  <td class="num">10</td>
+  <td>כן (16)</td>
+  <td>he</td>
+  <td>—</td>
+  <td><span class="pill ok">done</span><div class="when">2026-06-30 10:52:12</div></td>
+  <td><span class="pill ok">already_hebrew</span><div class="when">2026-06-30 11:05:36</div></td>
+</tr>
+<tr>
+  <td><a href="to_translate/Bunimovitz.2015.LB%20Canaan%20from%20Archaeology%20of%20Society%20Chapter_14.pdf">Bunimovitz.2015.LB Canaan from Archaeology of Society Chapter_14.pdf</a><div class="sha">ae410d60</div></td>
+  <td><a href="step1_md/Bunimovitz.2015.LB%20Canaan%20from%20Archaeology%20of%20Society%20Chapter_14/Bunimovitz.2015.LB%20Canaan%20from%20Archaeology%20of%20Society%20Chapter_14.md">Markdown (אנגלית)</a></td>
+  <td><a href="translated_md/Bunimovitz.2015.LB%20Canaan%20from%20Archaeology%20of%20Society%20Chapter_14/Bunimovitz.2015.LB%20Canaan%20from%20Archaeology%20of%20Society%20Chapter_14.he.md">Markdown (עברית)</a></td>
+  <td class="num">15</td>
+  <td>כן (4)</td>
+  <td>en</td>
+  <td>—</td>
+  <td><span class="pill ok">done</span><div class="when">2026-06-30 10:52:40</div></td>
+  <td><span class="pill ok">done</span><div class="when">2026-06-30 11:09:21</div></td>
+</tr>
+<tr>
+  <td><a href="to_translate/Gadot%20NEA%202019%20%20Iron%20I%20settlement%20and%20the%20urban%20centers.pdf">Gadot NEA 2019  Iron I settlement and the urban centers.pdf</a><div class="sha">1e89e657</div></td>
+  <td><a href="step1_md/Gadot%20NEA%202019%20%20Iron%20I%20settlement%20and%20the%20urban%20centers/Gadot%20NEA%202019%20%20Iron%20I%20settlement%20and%20the%20urban%20centers.md">Markdown (אנגלית)</a></td>
+  <td><a href="translated_md/Gadot%20NEA%202019%20%20Iron%20I%20settlement%20and%20the%20urban%20centers/Gadot%20NEA%202019%20%20Iron%20I%20settlement%20and%20the%20urban%20centers.he.md">Markdown (עברית)</a></td>
+  <td class="num">10</td>
+  <td>כן (10)</td>
+  <td>en</td>
+  <td>—</td>
+  <td><span class="pill ok">done</span><div class="when">2026-06-30 10:25:36</div></td>
+  <td><span class="pill ok">done</span><div class="when">2026-06-30 10:34:29</div></td>
+</tr>
+<tr>
+  <td><a href="to_translate/Gopher%20et%20al.%202001.The_when_the_where_and_the_why_of_the_Ne.pdf">Gopher et al. 2001.The_when_the_where_and_the_why_of_the_Ne.pdf</a><div class="sha">1259390e</div></td>
+  <td><a href="step1_md/Gopher%20et%20al.%202001.The_when_the_where_and_the_why_of_the_Ne/Gopher%20et%20al.%202001.The_when_the_where_and_the_why_of_the_Ne.md">Markdown (אנגלית)</a></td>
+  <td><a href="translated_md/Gopher%20et%20al.%202001.The_when_the_where_and_the_why_of_the_Ne/Gopher%20et%20al.%202001.The_when_the_where_and_the_why_of_the_Ne.he.md">Markdown (עברית)</a></td>
+  <td class="num">14</td>
+  <td>כן (1)</td>
+  <td>en</td>
+  <td>—</td>
+  <td><span class="pill ok">done</span><div class="when">2026-06-30 10:24:34</div></td>
+  <td><span class="pill ok">done</span><div class="when">2026-06-30 10:38:11</div></td>
+</tr>
+<tr>
+  <td><a href="to_translate/Goring-Morris%20and%20Belfer%20Cohen.2014.The_southern_Levant_Cisjordan_during_the_Neolithic_period%20%281%29.pdf">Goring-Morris and Belfer Cohen.2014.The_southern_Levant_Cisjordan_during_the_Neolithic_period (1).pdf</a><div class="sha">a3ad583e</div></td>
+  <td><a href="step1_md/Goring-Morris%20and%20Belfer%20Cohen.2014.The_southern_Levant_Cisjordan_during_the_Neolithic_period%20%281%29/Goring-Morris%20and%20Belfer%20Cohen.2014.The_southern_Levant_Cisjordan_during_the_Neolithic_period%20%281%29.md">Markdown (אנגלית)</a></td>
+  <td><a href="translated_md/Goring-Morris%20and%20Belfer%20Cohen.2014.The_southern_Levant_Cisjordan_during_the_Neolithic_period%20%281%29/Goring-Morris%20and%20Belfer%20Cohen.2014.The_southern_Levant_Cisjordan_during_the_Neolithic_period%20%281%29.he.md">Markdown (עברית)</a></td>
+  <td class="num">24</td>
+  <td>כן (8)</td>
+  <td>en</td>
+  <td>—</td>
+  <td><span class="pill ok">done</span><div class="when">2026-06-30 10:53:14</div></td>
+  <td><span class="pill ok">done</span><div class="when">2026-06-30 11:15:12</div></td>
+</tr>
+<tr>
+  <td><a href="to_translate/Greenberg-ThirdMillenniumLevantine-1996.pdf">Greenberg-ThirdMillenniumLevantine-1996.pdf</a><div class="sha">a4422be3</div></td>
+  <td><a href="step1_md/Greenberg-ThirdMillenniumLevantine-1996/Greenberg-ThirdMillenniumLevantine-1996.md">Markdown (אנגלית)</a></td>
+  <td><a href="translated_md/Greenberg-ThirdMillenniumLevantine-1996/Greenberg-ThirdMillenniumLevantine-1996.he.md">Markdown (עברית)</a></td>
+  <td class="num">21</td>
+  <td>כן (28)</td>
+  <td>en</td>
+  <td>—</td>
+  <td><span class="pill ok">done</span><div class="when">2026-06-30 10:54:27</div></td>
+  <td><span class="pill ok">done</span><div class="when">2026-06-30 11:15:28</div></td>
+</tr>
+<tr>
+  <td><a href="to_translate/Greenberg_R_1999_Uniformity_as_Ideology.pdf">Greenberg_R_1999_Uniformity_as_Ideology.pdf</a><div class="sha">c0cc1cdf</div></td>
+  <td><a href="step1_md/Greenberg_R_1999_Uniformity_as_Ideology/Greenberg_R_1999_Uniformity_as_Ideology.md">Markdown (אנגלית)</a></td>
+  <td>—</td>
+  <td class="num">17</td>
+  <td>כן (9)</td>
+  <td>he</td>
+  <td><span class="pill warn" title="text-layer chars=0">OCR</span></td>
+  <td><span class="pill ok">done</span><div class="when">2026-06-30 14:16:28</div></td>
+  <td><span class="pill ok">already_hebrew</span><div class="when">2026-06-30 14:22:00</div></td>
+</tr>
+<tr>
+  <td><a href="to_translate/Koch.2023.Nomadism%20Ch.12.pdf">Koch.2023.Nomadism Ch.12.pdf</a><div class="sha">a65a4ade</div></td>
+  <td><a href="step1_md/Koch.2023.Nomadism%20Ch.12/Koch.2023.Nomadism%20Ch.12.md">Markdown (אנגלית)</a></td>
+  <td><a href="translated_md/Koch.2023.Nomadism%20Ch.12/Koch.2023.Nomadism%20Ch.12.he.md">Markdown (עברית)</a></td>
+  <td class="num">32</td>
+  <td>כן (14)</td>
+  <td>en</td>
+  <td>—</td>
+  <td><span class="pill ok">done</span><div class="when">2026-06-30 10:55:54</div></td>
+  <td><span class="pill ok">done</span><div class="when">2026-06-30 11:24:31</div></td>
+</tr>
+<tr>
+  <td><a href="to_translate/Sergi.2023.Nomadism%20Ch.10.pdf">Sergi.2023.Nomadism Ch.10.pdf</a><div class="sha">ad8c55d6</div></td>
+  <td><a href="step1_md/Sergi.2023.Nomadism%20Ch.10/Sergi.2023.Nomadism%20Ch.10.md">Markdown (אנגלית)</a></td>
+  <td>—</td>
+  <td class="num">48</td>
+  <td>כן (15)</td>
+  <td>en</td>
+  <td>—</td>
+  <td><span class="pill ok">done</span><div class="when">2026-06-30 10:57:51</div></td>
+  <td><span class="pill err" title="translation failed after 5 attempts: Request exception can happen due to an api connection error. Please check your connection and try again">error</span><div class="when">2026-06-30 11:43:38</div></td>
+</tr>
+<tr>
+  <td><a href="to_translate/Yasur-Landau.2015.MB%20Canaan%20from%20Arcjaeology%20of%20Society%20Chapter_12.pdf">Yasur-Landau.2015.MB Canaan from Arcjaeology of Society Chapter_12.pdf</a><div class="sha">4dfb9063</div></td>
+  <td><a href="step1_md/Yasur-Landau.2015.MB%20Canaan%20from%20Arcjaeology%20of%20Society%20Chapter_12/Yasur-Landau.2015.MB%20Canaan%20from%20Arcjaeology%20of%20Society%20Chapter_12.md">Markdown (אנגלית)</a></td>
+  <td><a href="translated_md/Yasur-Landau.2015.MB%20Canaan%20from%20Arcjaeology%20of%20Society%20Chapter_12/Yasur-Landau.2015.MB%20Canaan%20from%20Arcjaeology%20of%20Society%20Chapter_12.he.md">Markdown (עברית)</a></td>
+  <td class="num">21</td>
+  <td>כן (5)</td>
+  <td>en</td>
+  <td>—</td>
+  <td><span class="pill ok">done</span><div class="when">2026-06-30 10:58:23</div></td>
+  <td><span class="pill ok">done</span><div class="when">2026-06-30 11:35:40</div></td>
+</tr>
+<tr>
+  <td><a href="to_translate/%D7%94%D7%AA%D7%A7%D7%95%D7%A4%D7%94%20%D7%94%D7%A0%D7%90%D7%95%D7%9C%D7%99%D7%AA%D7%99%D7%AA%20%D7%94%D7%A7%D7%93%D7%95%D7%9E%D7%94%20%D7%91%D7%99%D7%A8%D7%A7%D7%A0%D7%A4%D7%9C%D7%93%20%D7%A7%D7%93%D7%9E%D7%95%D7%A0%D7%99%D7%95%D7%AA%202025.pdf">התקופה הנאוליתית הקדומה בירקנפלד קדמוניות 2025.pdf</a><div class="sha">f35a277b</div></td>
+  <td><a href="step1_md/%D7%94%D7%AA%D7%A7%D7%95%D7%A4%D7%94%20%D7%94%D7%A0%D7%90%D7%95%D7%9C%D7%99%D7%AA%D7%99%D7%AA%20%D7%94%D7%A7%D7%93%D7%95%D7%9E%D7%94%20%D7%91%D7%99%D7%A8%D7%A7%D7%A0%D7%A4%D7%9C%D7%93%20%D7%A7%D7%93%D7%9E%D7%95%D7%A0%D7%99%D7%95%D7%AA%202025/%D7%94%D7%AA%D7%A7%D7%95%D7%A4%D7%94%20%D7%94%D7%A0%D7%90%D7%95%D7%9C%D7%99%D7%AA%D7%99%D7%AA%20%D7%94%D7%A7%D7%93%D7%95%D7%9E%D7%94%20%D7%91%D7%99%D7%A8%D7%A7%D7%A0%D7%A4%D7%9C%D7%93%20%D7%A7%D7%93%D7%9E%D7%95%D7%A0%D7%99%D7%95%D7%AA%202025.md">Markdown (אנגלית)</a></td>
+  <td>—</td>
+  <td class="num">8</td>
+  <td>כן (7)</td>
+  <td>he</td>
+  <td>—</td>
+  <td><span class="pill ok">done</span><div class="when">2026-06-30 10:58:48</div></td>
+  <td><span class="pill ok">already_hebrew</span><div class="when">2026-06-30 11:35:40</div></td>
+</tr>
+<tr>
+  <td><a href="to_translate/%D7%A8%D7%95%D7%96%D7%A0%D7%91%D7%A8%D7%92%20%D7%94%D7%AA%D7%A7%D7%95%D7%A4%D7%94%20%D7%9B%D7%9C%D7%A7%D7%95%D7%9C%D7%99%D7%AA%D7%99%D7%AA%20%D7%94%D7%9E%D7%90%D7%95%D7%97%D7%A8%D7%AA.pdf">רוזנברג התקופה כלקוליתית המאוחרת.pdf</a><div class="sha">769c8743</div></td>
+  <td><a href="step1_md/%D7%A8%D7%95%D7%96%D7%A0%D7%91%D7%A8%D7%92%20%D7%94%D7%AA%D7%A7%D7%95%D7%A4%D7%94%20%D7%9B%D7%9C%D7%A7%D7%95%D7%9C%D7%99%D7%AA%D7%99%D7%AA%20%D7%94%D7%9E%D7%90%D7%95%D7%97%D7%A8%D7%AA/%D7%A8%D7%95%D7%96%D7%A0%D7%91%D7%A8%D7%92%20%D7%94%D7%AA%D7%A7%D7%95%D7%A4%D7%94%20%D7%9B%D7%9C%D7%A7%D7%95%D7%9C%D7%99%D7%AA%D7%99%D7%AA%20%D7%94%D7%9E%D7%90%D7%95%D7%97%D7%A8%D7%AA.md">Markdown (אנגלית)</a></td>
+  <td>—</td>
+  <td class="num">10</td>
+  <td>כן (13)</td>
+  <td>he</td>
+  <td>—</td>
+  <td><span class="pill ok">done</span><div class="when">2026-06-30 10:59:22</div></td>
+  <td><span class="pill ok">already_hebrew</span><div class="when">2026-06-30 11:35:40</div></td>
+</tr>
 </tbody>
 </table>
 </body>

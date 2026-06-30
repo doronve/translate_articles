@@ -46,6 +46,14 @@ DEFAULTS: dict[str, dict[str, Any]] = {
         "images_subdir": "images",
         "image_dpi": 150,
         "drop_foreign_paragraphs": True,
+        "ocr_when_empty": True,
+        "force_ocr": False,
+        "ocr_min_chars": 200,
+        "ocr_language": "eng",
+        "ocr_fallback_languages": ["heb", "eng+heb"],
+        "ocr_dpi": 300,
+        "tesseract_cmd": "",
+        "tessdata_prefix": "",
     },
     "translation": {
         "target_language": "iw",
@@ -105,6 +113,14 @@ class Config:
     step1_images_subdir: str
     step1_image_dpi: int
     step1_drop_foreign_paragraphs: bool
+    step1_ocr_when_empty: bool
+    step1_force_ocr: bool
+    step1_ocr_min_chars: int
+    step1_ocr_language: str
+    step1_ocr_fallback_languages: tuple[str, ...]
+    step1_ocr_dpi: int
+    step1_tesseract_cmd: str
+    step1_tessdata_prefix: str
 
     # translation
     target_language: str
@@ -171,6 +187,16 @@ def load_config(path: Path | None = None) -> Config:
         step1_images_subdir=str(step1["images_subdir"]),
         step1_image_dpi=int(step1["image_dpi"]),
         step1_drop_foreign_paragraphs=bool(step1["drop_foreign_paragraphs"]),
+        step1_ocr_when_empty=bool(step1["ocr_when_empty"]),
+        step1_force_ocr=bool(step1["force_ocr"]),
+        step1_ocr_min_chars=int(step1["ocr_min_chars"]),
+        step1_ocr_language=str(step1["ocr_language"]),
+        step1_ocr_fallback_languages=tuple(
+            str(x) for x in step1.get("ocr_fallback_languages", []) or []
+        ),
+        step1_ocr_dpi=int(step1["ocr_dpi"]),
+        step1_tesseract_cmd=str(step1["tesseract_cmd"]),
+        step1_tessdata_prefix=str(step1["tessdata_prefix"]),
         target_language=str(tr["target_language"]),
         engine=str(tr["engine"]),
         chunk_char_limit=int(tr["chunk_char_limit"]),

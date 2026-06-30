@@ -13,6 +13,13 @@ tuned before moving on:
 | 1 | `step1_pdf_to_md.py` | `to_translate/*.pdf` | `step1_md/<basename>/*.md` (+ `images/`) |
 | 2 | `translate_md.py` | `step1_md/<basename>/*.md` | `translated_md/<basename>/*.he.md` |
 | 3a | `translate_articles.py` | `to_translate/*.pdf` (legacy direct PDF→DOCX flow) | `translated/<basename>/*.he.docx` |
+| 3b | `generate_index.py` | `translation_log.json` | `index.html` (browseable table) |
+
+For scanned (image-only) PDFs, step 1 automatically falls back to OCR
+via Tesseract (`heb` + `eng` traineddata, shipped in `tessdata_local/`).
+The fallback fires when the PDF has fewer than `[step1].ocr_min_chars`
+plain-text characters in its text layer; the per-page engine is chosen
+by counting characters that land in the script of the expected language.
 
 Every step shares one durable status log (`translation_log.json`) keyed by
 SHA-256 of the source PDF; each step writes its own nested object
@@ -49,6 +56,10 @@ re-processed.
 - `translate_md.py` — English Markdown → Hebrew Markdown (preserves
   headings, lists, image refs, tables, HTML comments).
 - `translate_articles.py` — legacy direct PDF → DOCX translation pipeline.
+- `generate_index.py` — rebuild `index.html` from the current log.
+- `tessdata_local/` — bundled Tesseract language data (`eng`, `osd`,
+  `heb`); kept in-repo so OCR works without admin install of language
+  packs to `C:\Program Files\Tesseract-OCR\tessdata\`.
 
 ## Configuration
 
@@ -83,8 +94,13 @@ py -3.13 _config.py
 Requires Python 3.13 (the version with the dependencies installed on this machine):
 
 ```powershell
-py -3.13 -m pip install --user gdown pymupdf pymupdf4llm deep-translator python-docx langdetect
+py -3.13 -m pip install --user gdown pymupdf pymupdf4llm deep-translator python-docx langdetect pytesseract Pillow
 ```
+
+OCR also needs Tesseract installed on the OS (`winget install --id
+UB-Mannheim.TesseractOCR`). The Hebrew/English `*.traineddata` files
+live in `tessdata_local/` so no admin install is needed for language
+packs; `[step1].tessdata_prefix` in `config.toml` points there.
 
 The helpers force UTF-8 stdio because some filenames are Hebrew:
 
@@ -122,6 +138,24 @@ from the `.md` file. When `[step1].drop_foreign_paragraphs` is true, paragraphs
 whose detected language differs from the document's main source language are
 dropped (e.g. the Slovenian abstract in Gopher 2001). Re-running is idempotent
 unless `--force` is passed.
+
+If the source PDF has no text layer (a scan), step 1 instead renders each
+page with PyMuPDF and OCRs it via Tesseract. For each page every configured
+language (`[step1].ocr_language` + `[step1].ocr_fallback_languages`) is tried
+and the engine that produces the most characters in the *expected script*
+wins — e.g. for `heb` we count Hebrew code points, so eng-engine garbage on
+a Hebrew page doesn't accidentally win.
+
+## Index page
+
+```powershell
+py -3.13 generate_index.py
+```
+
+Reads `translation_log.json` and writes `index.html` (open it in a browser).
+Columns: original PDF, step 1 Markdown, Hebrew Markdown, pages, image count,
+source language, OCR flag, per-stage status pill. Re-run any time the log
+changes.
 
 ## Step 2: English MD → Hebrew MD
 

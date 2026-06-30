@@ -60,6 +60,39 @@ image_dpi        = 150
 # digits / markdown syntax are kept regardless.
 drop_foreign_paragraphs = true
 
+# When true, if the normal text-layer extraction yields less than
+# `ocr_min_chars` characters (i.e. the PDF is scanned), fall back to OCR
+# via Tesseract. Requires Tesseract installed locally.
+ocr_when_empty   = true
+
+# Force OCR for *every* PDF, even if a text layer exists. Useful only when
+# the embedded text layer is known to be garbage. Slower.
+force_ocr        = false
+
+# Minimum number of plain-text characters the regular extractor must
+# produce before we accept it; anything below triggers OCR fallback.
+ocr_min_chars    = 200
+
+# Tesseract OCR language(s). For Hebrew sources use "heb" (requires
+# heb.traineddata installed). Multiple languages can be combined like
+# "eng+heb".
+ocr_language     = "eng"
+
+# If the primary OCR language produces gibberish (very low recognized
+# word ratio) we re-OCR with each of these languages in turn and pick
+# the best result. Set to [] to disable.
+ocr_fallback_languages = ["heb", "eng+heb"]
+
+# Render DPI used for OCR. Higher = better recognition but slower.
+ocr_dpi          = 300
+
+# Path overrides for Tesseract. Leave empty to auto-detect (the default
+# UB-Mannheim Windows install location is tried automatically).
+# For Hebrew we ship a project-local tessdata folder so it doesn't need
+# admin to install.
+tesseract_cmd    = ""
+tessdata_prefix  = "tessdata_local"
+
 [translation]
 # Target language for the translation. "iw" is the legacy Google code for
 # Hebrew; "he" also works.

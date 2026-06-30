@@ -269,24 +269,27 @@
     "original_name": "Greenberg_R_1999_Uniformity_as_Ideology.pdf",
     "page_count": 17,
     "sha256": "c0cc1cdf138e2fb81ddcd2e8d2cb2ff79fbaed89624baaf70b72c6a671305d24",
-    "source_lang": null,
+    "source_lang": "he",
+    "source_lang_note": "Hebrew article confirmed by user (OCR'd; original PDF has no text layer)",
     "step1": {
-      "at": "2026-06-30 10:54:42",
+      "at": "2026-06-30 14:16:28",
       "dropped_foreign_paragraphs": 0,
       "error": null,
-      "image_count": 0,
+      "image_count": 9,
       "images_dir_relpath": "step1_md/Greenberg_R_1999_Uniformity_as_Ideology/images",
       "md_relpath": "step1_md/Greenberg_R_1999_Uniformity_as_Ideology/Greenberg_R_1999_Uniformity_as_Ideology.md",
+      "mode": "ocr",
       "status": "done"
     },
+    "text_layer_chars": 0,
     "translation_md": {
-      "at": "2026-06-30 11:15:28",
+      "at": "2026-06-30 14:22:00",
       "engine": "google",
       "error": null,
       "source_md_relpath": "step1_md/Greenberg_R_1999_Uniformity_as_Ideology/Greenberg_R_1999_Uniformity_as_Ideology.md",
-      "status": "done",
+      "status": "already_hebrew",
       "target_language": "iw",
-      "translated_md_relpath": "translated_md/Greenberg_R_1999_Uniformity_as_Ideology/Greenberg_R_1999_Uniformity_as_Ideology.he.md"
+      "translated_md_relpath": null
     }
   },
   "f35a277b686abf8381c0700f2ed23cac9287d29c712735f4d95f598cf108d0e0": {
