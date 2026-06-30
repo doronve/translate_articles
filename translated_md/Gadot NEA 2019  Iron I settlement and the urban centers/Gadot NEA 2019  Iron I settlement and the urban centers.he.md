@@ -11,7 +11,7 @@
 **NEAR EASTERN ARCHEOLOGY 82.1 (2019)** תוכן זה הורד מתאריך 132.066.011.211 ב-09 במרץ 2019 04:38:39 AM. כל השימוש בכפוף לתנאים וההגבלות של University of Chicago Press (http://www.journals.uchicago.edu/).
 
 
-![](../../step1_md/Gadot NEA 2019  Iron I settlement and the urban centers/images/Gadot_NEA_2019__Iron_I_settlement_and_the_urban_centers.pdf-0003-00.png)
+![](../../step1_md/Gadot%20NEA%202019%20%20Iron%20I%20settlement%20and%20the%20urban%20centers/images/Gadot_NEA_2019__Iron_I_settlement_and_the_urban_centers.pdf-0003-00.png)
 
 
 <!-- Start of picture text -->
@@ -36,7 +36,7 @@ Figure 1.  Surveying the eastern outskirts of the Samaria Highlands. Adam Zertal
 תוכן זה הורד מ-132.066.011.211 ב-09 במרץ 2019 04:38:39 AM. כל השימוש בכפוף לתנאים וההגבלות של אוניברסיטת שיקגו (http://www.journals.uchicago.edu/t-and-c).
 
 
-![](../../step1_md/Gadot NEA 2019  Iron I settlement and the urban centers/images/Gadot_NEA_2019__Iron_I_settlement_and_the_urban_centers.pdf-0004-00.png)
+![](../../step1_md/Gadot%20NEA%202019%20%20Iron%20I%20settlement%20and%20the%20urban%20centers/images/Gadot_NEA_2019__Iron_I_settlement_and_the_urban_centers.pdf-0004-00.png)
 
 
 **איור 2.** חפירות באתר שילה (1981–1985). צילום באדיבות ישראל פינקלשטיין.
@@ -58,7 +58,7 @@ Figure 1.  Surveying the eastern outskirts of the Samaria Highlands. Adam Zertal
 **NEAR EASTERN ARCHEOLOGY 82.1 (2019) 35** תוכן זה הורד מתאריך 132.066.011.211 בתאריך 09 במרץ 2019 04:38:39 AM כל השימוש בכפוף לתנאים וההגבלות של University of Chicago Press (http://www.educ/tica-goand).
 
 
-![](../../step1_md/Gadot NEA 2019  Iron I settlement and the urban centers/images/Gadot_NEA_2019__Iron_I_settlement_and_the_urban_centers.pdf-0005-00.png)
+![](../../step1_md/Gadot%20NEA%202019%20%20Iron%20I%20settlement%20and%20the%20urban%20centers/images/Gadot_NEA_2019__Iron_I_settlement_and_the_urban_centers.pdf-0005-00.png)
 
 
 <!-- Start of picture text -->
@@ -67,14 +67,14 @@ Figure 3.  The site of  ‘Isbet Sartah after reconstruction. The site was excav
 **איור 3.** האתר של 'אסבת סרטה לאחר שיקום. האתר נחפר כדוגמה לארתה לאחר שחזור. האתר נחפר כדוגמה לאח לאחר שחזור. האתר נחפר כדוגמה לאתר ישראלי טיפוסי. באדיבות ישראל פינקלשטיין.
 
 
-![](../../step1_md/Gadot NEA 2019  Iron I settlement and the urban centers/images/Gadot_NEA_2019__Iron_I_settlement_and_the_urban_centers.pdf-0005-02.png)
+![](../../step1_md/Gadot%20NEA%202019%20%20Iron%20I%20settlement%20and%20the%20urban%20centers/images/Gadot_NEA_2019__Iron_I_settlement_and_the_urban_centers.pdf-0005-02.png)
 
 
 <!-- Start of picture text -->
 Figure 4.  A “courtyard” building at Megiddo Stratum  VI. This building was part of a newly built city<br>that preserved much of Megiddo’s Canaanite nature. Courtesy of Israel Finkelstein and the Megiddo<br>Expedition.<br><!-- End of picture text -->
 
 
-![](../../step1_md/Gadot NEA 2019  Iron I settlement and the urban centers/images/Gadot_NEA_2019__Iron_I_settlement_and_the_urban_centers.pdf-0005-03.png)
+![](../../step1_md/Gadot%20NEA%202019%20%20Iron%20I%20settlement%20and%20the%20urban%20centers/images/Gadot_NEA_2019__Iron_I_settlement_and_the_urban_centers.pdf-0005-03.png)
 
 
 <!-- Start of picture text -->
@@ -103,7 +103,7 @@ Figure 5.  The site of Azekah was completely destroyed at the last third of the 
 בזהירות (Zertal 1994, 58–59). גישה טובה יותר תהיה לארגן מכלולים של כלי החרס של האתרים שנחפרו על סמך כרונולוגיה, תוך שימוש בתאריכים מוחלטים של<sup>14</sup> C במידת האפשר (Finkelstein and Piazetsky 2006). האתר היחיד שתוארך ל<sup>14</sup> ג' הוא שכבה V שילה, שנמצאה כיושבת במחצית הראשונה של המאה האחת עשרה לפני הספירה. התיארוך של כל שאר האתרים שנחפרו, כמו הר עיבל או אל-אחוות, נחשב ביחס למכלול החרסים של שילה החמישי, כאשר חלק מהאתרים התיישבו מוקדם יותר (למשל גילה) וחלק מאוחר יותר (כגון 'עזבת סרטא ב'-א'; איור 3). מבחינה מתודולוגית יש לזכור שתמיד קשה לצפות בהתחלות של תהליכים בתיעוד הארכיאולוגי, שכן הם נמחקים על ידי פעילויות מאוחרות יותר. לפיכך, ללא מחקר שטח נוסף, ניתן רק להסיק שגל ההתיישבות החל כבר במאה הי"ב לפנה"ס והגיע לשיאו במהלך המאות האחת עשרה והעשירית לפנה"ס.
 
 
-![](../../step1_md/Gadot NEA 2019  Iron I settlement and the urban centers/images/Gadot_NEA_2019__Iron_I_settlement_and_the_urban_centers.pdf-0006-01.png)
+![](../../step1_md/Gadot%20NEA%202019%20%20Iron%20I%20settlement%20and%20the%20urban%20centers/images/Gadot_NEA_2019__Iron_I_settlement_and_the_urban_centers.pdf-0006-01.png)
 
 
 <!-- Start of picture text -->
@@ -114,13 +114,13 @@ Figure 6.  Tel Abel, Area A at the end of the 2018 season. In the picture it is 
 **NEAR EASTERN ARCHEOLOGY 82.1 (2019) 37** תוכן זה הורד מתאריך 132.066.011.211 בתאריך 09 במרץ 2019 04:38:39 AM. כל השימוש בכפוף לתנאים וההגבלות של University of Chicago Press (http://www.edu/tica-goand).
 
 
-![](../../step1_md/Gadot NEA 2019  Iron I settlement and the urban centers/images/Gadot_NEA_2019__Iron_I_settlement_and_the_urban_centers.pdf-0007-00.png)
+![](../../step1_md/Gadot%20NEA%202019%20%20Iron%20I%20settlement%20and%20the%20urban%20centers/images/Gadot_NEA_2019__Iron_I_settlement_and_the_urban_centers.pdf-0007-00.png)
 
 
 **איור 8.** אתר "ברזל I" המתוכנן מראש בתל הדר השוכן בחוף המזרחי של הכנרת. האתר נחפר על ידי משה כוכבי ופרייה בק עבור אוניברסיטת תל אביב. באדיבות אסף קליימן ומכון סוניה ומרקו נדלר לארכיאולוגיה, אוניברסיטת תל אביב.
 
 
-![](../../step1_md/Gadot NEA 2019  Iron I settlement and the urban centers/images/Gadot_NEA_2019__Iron_I_settlement_and_the_urban_centers.pdf-0007-02.png)
+![](../../step1_md/Gadot%20NEA%202019%20%20Iron%20I%20settlement%20and%20the%20urban%20centers/images/Gadot_NEA_2019__Iron_I_settlement_and_the_urban_centers.pdf-0007-02.png)
 
 
 **איור 9.** מפת כל האתרים שנסקרו ברזל 1 לאורך ואדי תרצה ובקעת הירדן והקשר שלהם לאתרים העירוניים שכם, תל-סעדיה ורחוב. הוכן על ידי אסף קליימן.
@@ -140,7 +140,7 @@ Figure 6.  Tel Abel, Area A at the end of the 2018 season. In the picture it is 
 **38 NEAR EASTERN ARCHEOLOGY 82.1 (2019)** תוכן זה הורד מתאריך 132.066.011.211 ב-09 במרץ 2019 04:38:39 AM. כל השימוש בכפוף לתנאים וההגבלות של אוניברסיטת שיקגו (http://www.journals.uchicago.edu).
 
 
-![](../../step1_md/Gadot NEA 2019  Iron I settlement and the urban centers/images/Gadot_NEA_2019__Iron_I_settlement_and_the_urban_centers.pdf-0008-00.png)
+![](../../step1_md/Gadot%20NEA%202019%20%20Iron%20I%20settlement%20and%20the%20urban%20centers/images/Gadot_NEA_2019__Iron_I_settlement_and_the_urban_centers.pdf-0008-00.png)
 
 
 יישובי בקעת הירדן באו לאפיין מרכזים עירוניים. אתרים כמו תל רחוב, טל זירעא וטל דיר אלה החלו להפגין המשכיות תרבותית ופוליטית במעבר מתקופת הברונזה המאוחרת לברזל 1 (איור 9). עבודה שנערכה סביב מגידו מלמדת שהעיר לא הייתה מבודדת ושמערב עמק יזרעאל נהנה מתקופה של התחדשות. כמו כן, חודש סחר בין-אזורי וימי, כפי שהציעו עבודות שבוצעו ב"דור" המביאות לידי ביטוי את מעמדה כנמל כניסה למסחר המגיע בעיקר ממצרים ומארצות זרות אחרות. אתרים כמו תל קייסן ותל קסיל, אשדוד, אשקלון וכנראה גם עזה מראים שדור לא הייתה לבד בקשר עם סחר ימי. עם זאת, רוב הערים היו מקומיות יותר בכלכלתן ופיתחו רשת חילופין מקומית בעיקרה. המשכיות תרבותית מדווחת מתל גזר, תל בית שמש ותל עטון. רחוק יותר מדרום מערב, המרכז העירוני של עקרון הגיע לשיאו במהלך המאה האחת עשרה, רק כדי שהוחלף בעיר גת. קרוב יותר לסוף העידן חודש ייצור הנחושת בערבה והדבר הביא לשינויים רחבי היקף בדפוס ההתיישבות של הנגב ומישור החוף הדרומי. האזור הפנימי של השפלה התחתית, שטחה לשעבר של לכיש, הוא האזור היחיד שלא התאושש משנות התסיסה הפוליטית.
@@ -234,7 +234,7 @@ Dever, William G. 1995. Ceramics, Ethnicity, and the Question of Israel's Origin
 - ———. 2016. _סקר ארץ גבעת מנשה_. כרך יד. 2: _מנחל עירון לנחל שכם_ . ליידן: בריל.
 
 
-![](../../step1_md/Gadot NEA 2019  Iron I settlement and the urban centers/images/Gadot_NEA_2019__Iron_I_settlement_and_the_urban_centers.pdf-0010-26.png)
+![](../../step1_md/Gadot%20NEA%202019%20%20Iron%20I%20settlement%20and%20the%20urban%20centers/images/Gadot_NEA_2019__Iron_I_settlement_and_the_urban_centers.pdf-0010-26.png)
 
 
 **יובל גדות** הוא ראש המחלקה לארכיאולוגיה ותרבויות המזרח הקדום באוניברסיטת תל אביב, יעקב מ. אלקוב. גדות השיג את הדוקטורט שלו, שכותרתו: "המשכיות ושינוי: המעבר בין תקופת הברונזה המאוחרת לתקופת הברזל בישראל מישור החוף המרכזי", בשנת 2004 מאוניברסיטת תל-אביב. עבודה זו כללה פרסום מלא ראשון של החפירות בתל אפק ולימוד מגמות בתרבות החומרית כפי שהן מובנות ביחס לאירועים היסטוריים. כיום הוא מנחה את הפרויקט "היווצרות נופים מדורגים בהרי יהודה", הממומן על ידי הקרן הישראלית למדעים.

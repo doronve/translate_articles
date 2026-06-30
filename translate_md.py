@@ -28,6 +28,7 @@ import re
 import sys
 import time
 import traceback
+import urllib.parse
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -264,21 +265,59 @@ def safe_folder_name(name: str) -> str:
     return out or "document"
 
 
+def _encode_md_url(url: str) -> str:
+    """URL-encode a markdown image/link target, preserving path structure.
+
+    Spaces and other unsafe characters in image paths break renderers like
+    GitHub, VS Code's preview, and most CommonMark viewers — they treat
+    everything after the first space as a title attribute. ``quote`` with
+    ``safe="/:#?&="`` keeps URL structure intact while encoding spaces
+    and other special characters.
+    """
+    if url.startswith(("http://", "https://", "mailto:", "data:")):
+        return url
+    return urllib.parse.quote(url, safe="/:#?&=")
+
+
 def _rewrite_image_refs_to_step1(md_text: str, step1_basename: str) -> str:
-    """Make image refs point back to step1_md/<basename>/images/...
+    """Make image refs point back to step1_md/<basename>/images/... and
+    URL-encode the path so renderers handle spaces correctly.
 
     The translated MD lives in translated_md/<basename>/, so the
-    original ``images/foo.png`` ref would be wrong. Rewrite to a path
-    that resolves from translated_md/<basename>/ back to step1_md.
+    original ``images/foo.png`` ref would be wrong on its own. We rewrite
+    to a path that resolves from translated_md/<basename>/ back to step1_md
+    and percent-encode special characters.
     """
     rel_prefix = f"../../{CONFIG.step1_md_dir.name}/{step1_basename}/"
 
     def _replace(match: re.Match) -> str:
-        target = match.group(2)
-        if target.startswith(("http://", "https://", "/", "..", rel_prefix)):
+        alt = match.group(1)
+        target = match.group(2).strip()
+        # Strip optional CommonMark title (e.g. ` "title"`).
+        if " " in target and target[0] not in ("<",):
+            # Only treat it as having a title if the first token is a valid URL
+            # head. To be safe, just use the whole thing as the path.
+            pass
+        # Already a remote / data URL: leave untouched.
+        if target.startswith(("http://", "https://", "mailto:", "data:")):
             return match.group(0)
-        new_target = rel_prefix + target.lstrip("./")
-        return f"![{match.group(1)}]({new_target})"
+        # Strip a previous absolute prefix so we don't double-prepend.
+        if target.startswith(rel_prefix) or target.startswith(
+            urllib.parse.quote(rel_prefix, safe="/:#?&=")
+        ):
+            # Decode then re-encode to ensure consistent encoding.
+            decoded = urllib.parse.unquote(target)
+            encoded = _encode_md_url(decoded)
+            return f"![{alt}]({encoded})"
+        # Treat root-anchored paths as absolute and leave them alone.
+        if target.startswith("/"):
+            return f"![{alt}]({_encode_md_url(target)})"
+        # Anything else (including "../..", "./foo", "images/foo.png") is
+        # a relative path from the step 1 .md file. Drop a leading "./",
+        # then rewrite onto our rel_prefix.
+        cleaned = target[2:] if target.startswith("./") else target
+        new_target = rel_prefix + cleaned
+        return f"![{alt}]({_encode_md_url(new_target)})"
 
     return re.sub(r"!\[([^\]]*)\]\(([^)]+)\)", _replace, md_text)
 
@@ -379,11 +418,38 @@ def translate_one(
     return entry
 
 
+def fix_image_paths_in_existing(entry: dict) -> bool:
+    """Re-apply image-ref rewriting (now URL-encoded) on an existing .he.md.
+
+    Returns True if the file was changed.
+    """
+    tmd = entry.get("translation_md") or {}
+    if tmd.get("status") != "done" or not tmd.get("translated_md_relpath"):
+        return False
+    md_path = (Path.cwd() / tmd["translated_md_relpath"]).resolve()
+    if not md_path.exists():
+        print(f"  missing: {md_path}", flush=True)
+        return False
+    src_md = (Path.cwd() / (tmd.get("source_md_relpath") or "")).resolve()
+    step1_basename = src_md.parent.name if src_md.parent.exists() else md_path.parent.name
+    before = md_path.read_text(encoding="utf-8")
+    after = _rewrite_image_refs_to_step1(before, step1_basename)
+    if before == after:
+        return False
+    md_path.write_text(after, encoding="utf-8")
+    return True
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--only", type=str, default=None, help="Glob on original_name")
     parser.add_argument("--force", action="store_true")
+    parser.add_argument(
+        "--fix-image-paths-only",
+        action="store_true",
+        help="Don't translate; just URL-encode image refs in existing translated MD files.",
+    )
     args = parser.parse_args()
 
     CONFIG.translated_md_dir.mkdir(parents=True, exist_ok=True)
@@ -395,6 +461,19 @@ def main() -> int:
     )
     if args.only:
         candidates = [e for e in candidates if fnmatch.fnmatch(e["original_name"], args.only)]
+
+    if args.fix_image_paths_only:
+        changed = 0
+        for entry in candidates:
+            print(f"\n=== {entry['original_name']} ===", flush=True)
+            if fix_image_paths_in_existing(entry):
+                changed += 1
+                print("  image refs rewritten + URL-encoded.", flush=True)
+            else:
+                print("  no change.", flush=True)
+        print(f"\nDone. {changed} file(s) changed.")
+        return 0
+
     candidates = [e for e in candidates if (e.get("step1") or {}).get("status") == "done"]
 
     if not candidates:
