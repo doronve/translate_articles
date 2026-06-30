@@ -110,12 +110,14 @@ def _split_and_translate_inline(text: str, translator: GoogleTranslator) -> str:
 
     We intentionally do NOT try to strip inline emphasis / link syntax;
     Google Translate handles common punctuation well enough and over-clever
-    masking tends to scramble citations.
+    masking tends to scramble citations. On translator failure we fall back
+    to splitting (see ``_translate_with_split_fallback``) so a single
+    awkward sentence doesn't kill the whole document.
     """
     text = text.strip()
     if not text:
         return ""
-    return translator.translate(text) or ""
+    return _translate_with_split_fallback(text, translator)
 
 
 def translate_block(block: Block, translator: GoogleTranslator) -> str:
@@ -159,11 +161,65 @@ def translate_block(block: Block, translator: GoogleTranslator) -> str:
     return _translate_long_text(block.text, translator)
 
 
+def _split_sentences(text: str) -> list[str]:
+    """Split a paragraph into sentence-ish chunks for safe sub-translation."""
+    parts = [p for p in re.split(r"(?<=[\.!?])\s+", text) if p.strip()]
+    return parts or [text]
+
+
+def _split_halves(text: str) -> list[str]:
+    """Split a string into two halves on the closest whitespace to the middle."""
+    if " " not in text:
+        return [text]
+    mid = len(text) // 2
+    left = text.rfind(" ", 0, mid)
+    right = text.find(" ", mid)
+    cut = left if (left != -1 and (right == -1 or mid - left <= right - mid)) else right
+    if cut == -1:
+        return [text]
+    return [text[:cut].rstrip(), text[cut:].lstrip()]
+
+
+_MIN_RECURSE_CHARS = 60
+
+
+def _translate_with_split_fallback(text: str, translator: GoogleTranslator) -> str:
+    """Translate ``text``; on failure, recursively split and retry.
+
+    Google's free endpoint occasionally rejects specific 200-400 char
+    combinations that individually translate fine. When the retrying
+    translator gives up, we fall back to sentence-level splitting, then
+    halving, then character-level halving down to ~60 chars. If a sub-chunk
+    of <= 60 chars still won't translate, we surface the failure.
+    """
+    text = (text or "").strip()
+    if not text:
+        return ""
+    try:
+        return translator.translate(text) or ""
+    except Exception as exc:  # noqa: BLE001
+        if len(text) <= _MIN_RECURSE_CHARS:
+            raise
+        sentences = _split_sentences(text)
+        if len(sentences) < 2:
+            sentences = _split_halves(text)
+            if len(sentences) < 2:
+                raise
+        print(
+            f"    block failed at {len(text)} chars; splitting into "
+            f"{len(sentences)} parts and retrying ({exc})",
+            flush=True,
+        )
+        return " ".join(
+            _translate_with_split_fallback(p, translator) for p in sentences
+        )
+
+
 def _translate_long_text(text: str, translator: GoogleTranslator) -> str:
     """Translate a prose block, chunking around the configured char limit."""
     limit = CONFIG.chunk_char_limit
     if len(text) <= limit:
-        return _split_and_translate_inline(text, translator)
+        return _translate_with_split_fallback(text, translator)
     # split on sentence-ish boundaries
     parts: list[str] = []
     buf = ""
@@ -181,7 +237,7 @@ def _translate_long_text(text: str, translator: GoogleTranslator) -> str:
         buf = sent
     if buf:
         parts.append(buf)
-    return " ".join(_split_and_translate_inline(p, translator) for p in parts)
+    return " ".join(_translate_with_split_fallback(p, translator) for p in parts)
 
 
 # ---------------------------------------------------------------------------
@@ -234,8 +290,13 @@ class _RetryingTranslator:
       too many rapid requests.
     """
 
-    # tier-2 (rate-limit) waits: 60s, 120s, 240s, 480s, 600s
-    _RATE_LIMIT_WAITS = (60, 120, 240, 480, 600)
+    # tier-2 (rate-limit) waits: 30s, 90s.
+    # Kept short on purpose: when the failure is actually a single-block
+    # content quirk (not a real IP block), we want to bubble up fast so the
+    # caller's recursive-split fallback can take over. If the IP is truly
+    # blocked, _every_ subsequent block will hit these waits too -- the
+    # outer pipeline still gets a chance to back off across many blocks.
+    _RATE_LIMIT_WAITS = (30, 90)
     # tier-1 (transient) waits: derived from CONFIG.retry_backoff_seconds
 
     def __init__(self) -> None:
