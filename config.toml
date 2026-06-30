@@ -7,9 +7,13 @@
 # back to the defaults baked into _config.py.
 
 [paths]
-# Where to download PDFs from Google Drive, and where translate_articles.py
-# looks for input PDFs.
+# Where to download PDFs from Google Drive, and where the pipeline looks
+# for input PDFs.
 source_dir       = "to_translate"
+
+# Step 1 output: English Markdown extracted from each PDF.
+# Layout: <step1_md_dir>/<basename>/<basename>.md (+ extracted images if any)
+step1_md_dir     = "step1_md"
 
 # Where translated outputs land. For each translated PDF we create
 # <translated_dir>/<basename>/ containing the original PDF + the *.he.docx.
@@ -19,7 +23,7 @@ translated_dir   = "translated"
 error_dir        = "error_translate"
 
 # Durable record of every file we've seen, keyed by SHA-256 so duplicates
-# are never re-translated.
+# are never re-processed. Stores per-step status (step1, translation, ...).
 log_file         = "translation_log.json"
 
 # Auto-generated browseable table.
@@ -32,6 +36,18 @@ folder_url       = "https://drive.google.com/drive/folders/1MxUdFWGuc13JEGEZlnCv
 # When true, only files ending in .pdf are downloaded; Google Docs / sheets
 # / etc. in the folder are skipped.
 pdfs_only        = true
+
+[step1]
+# Step 1: extract each PDF to English Markdown via pymupdf4llm.
+# When true, embedded images are saved next to the .md file and referenced
+# from it (so the markdown looks closer to the source PDF).
+extract_images   = true
+
+# Where image files are written (relative to each PDF's step1 folder).
+images_subdir    = "images"
+
+# Image DPI for extracted page-fallback images (higher = sharper, larger).
+image_dpi        = 150
 
 [translation]
 # Target language for the translation. "iw" is the legacy Google code for

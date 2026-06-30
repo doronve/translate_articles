@@ -30,6 +30,7 @@ CONFIG_PATH = ROOT / "config.toml"
 DEFAULTS: dict[str, dict[str, Any]] = {
     "paths": {
         "source_dir": "to_translate",
+        "step1_md_dir": "step1_md",
         "translated_dir": "translated",
         "error_dir": "error_translate",
         "log_file": "translation_log.json",
@@ -38,6 +39,11 @@ DEFAULTS: dict[str, dict[str, Any]] = {
     "drive": {
         "folder_url": "https://drive.google.com/drive/folders/1MxUdFWGuc13JEGEZlnCvtPGMzXXRdCh_",
         "pdfs_only": True,
+    },
+    "step1": {
+        "extract_images": True,
+        "images_subdir": "images",
+        "image_dpi": 150,
     },
     "translation": {
         "target_language": "iw",
@@ -81,6 +87,7 @@ class Config:
 
     # paths
     source_dir: Path
+    step1_md_dir: Path
     translated_dir: Path
     error_dir: Path
     log_file: Path
@@ -89,6 +96,11 @@ class Config:
     # drive
     drive_folder_url: str
     drive_pdfs_only: bool
+
+    # step1
+    step1_extract_images: bool
+    step1_images_subdir: str
+    step1_image_dpi: int
 
     # translation
     target_language: str
@@ -136,18 +148,23 @@ def load_config(path: Path | None = None) -> Config:
 
     paths = merged["paths"]
     drive = merged["drive"]
+    step1 = merged["step1"]
     tr = merged["translation"]
     docx = merged["docx"]
     network = merged["network"]
 
     return Config(
         source_dir=_resolve_path(paths["source_dir"]),
+        step1_md_dir=_resolve_path(paths["step1_md_dir"]),
         translated_dir=_resolve_path(paths["translated_dir"]),
         error_dir=_resolve_path(paths["error_dir"]),
         log_file=_resolve_path(paths["log_file"]),
         index_file=_resolve_path(paths["index_file"]),
         drive_folder_url=str(drive["folder_url"]),
         drive_pdfs_only=bool(drive["pdfs_only"]),
+        step1_extract_images=bool(step1["extract_images"]),
+        step1_images_subdir=str(step1["images_subdir"]),
+        step1_image_dpi=int(step1["image_dpi"]),
         target_language=str(tr["target_language"]),
         engine=str(tr["engine"]),
         chunk_char_limit=int(tr["chunk_char_limit"]),

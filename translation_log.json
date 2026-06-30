@@ -1,15 +1,41 @@
 {
   "1259390e2b7d273312f91b2a1f741ea75979910022f08a28f0a0c7abf2d0f72d": {
     "duplicates": [],
-    "error": null,
     "has_pictures": true,
     "original_name": "Gopher et al. 2001.The_when_the_where_and_the_why_of_the_Ne.pdf",
-    "original_relpath": "translated/Gopher et al. 2001.The_when_the_where_and_the_why_of_the_Ne/Gopher et al. 2001.The_when_the_where_and_the_why_of_the_Ne.pdf",
     "page_count": 14,
     "sha256": "1259390e2b7d273312f91b2a1f741ea75979910022f08a28f0a0c7abf2d0f72d",
     "source_lang": "en",
-    "status": "translated",
-    "translated_at": "2026-06-29 16:55:13",
-    "translated_relpath": "translated/Gopher et al. 2001.The_when_the_where_and_the_why_of_the_Ne/Gopher et al. 2001.The_when_the_where_and_the_why_of_the_Ne.he.docx"
+    "step1": {
+      "at": "2026-06-30 10:13:15",
+      "error": null,
+      "image_count": 1,
+      "images_dir_relpath": "step1_md/Gopher et al. 2001.The_when_the_where_and_the_why_of_the_Ne/images",
+      "md_relpath": "step1_md/Gopher et al. 2001.The_when_the_where_and_the_why_of_the_Ne/Gopher et al. 2001.The_when_the_where_and_the_why_of_the_Ne.md",
+      "status": "done"
+    },
+    "translation": {
+      "at": "2026-06-29 16:55:13",
+      "error": null,
+      "original_relpath": "translated/Gopher et al. 2001.The_when_the_where_and_the_why_of_the_Ne/Gopher et al. 2001.The_when_the_where_and_the_why_of_the_Ne.pdf",
+      "status": "translated",
+      "translated_relpath": "translated/Gopher et al. 2001.The_when_the_where_and_the_why_of_the_Ne/Gopher et al. 2001.The_when_the_where_and_the_why_of_the_Ne.he.docx"
+    }
+  },
+  "1e89e657bde6378407fb71c2b45203620229fda5f6b18053399c518a90c7988d": {
+    "duplicates": [],
+    "has_pictures": true,
+    "original_name": "Gadot NEA 2019  Iron I settlement and the urban centers.pdf",
+    "page_count": 10,
+    "sha256": "1e89e657bde6378407fb71c2b45203620229fda5f6b18053399c518a90c7988d",
+    "source_lang": "en",
+    "step1": {
+      "at": "2026-06-30 10:13:46",
+      "error": null,
+      "image_count": 10,
+      "images_dir_relpath": "step1_md/Gadot NEA 2019  Iron I settlement and the urban centers/images",
+      "md_relpath": "step1_md/Gadot NEA 2019  Iron I settlement and the urban centers/Gadot NEA 2019  Iron I settlement and the urban centers.md",
+      "status": "done"
+    }
   }
 }
