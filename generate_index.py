@@ -66,6 +66,31 @@ def _status_pill(step: dict | None, *, success_keys: tuple[str, ...]) -> str:
     return f'<span class="pill warn">{html.escape(status)}</span>'
 
 
+def _summary_cell(entry: dict) -> str:
+    """Render the Hebrew summary column with a small attribution footer."""
+    summary = entry.get("summary") or {}
+    text = (summary.get("text") or "").strip()
+    if not text:
+        return '<td class="summary-cell"><span class="missing">—</span></td>'
+
+    kind = summary.get("source_kind")
+    if kind == "translated_md":
+        source_label = "מתוך התרגום לעברית"
+    elif kind == "step1_md_hebrew":
+        source_label = "מתוך המקור העברי"
+    else:
+        source_label = kind or ""
+
+    at = summary.get("at") or ""
+    title = f"{source_label}{' · ' + at if at else ''}"
+    return (
+        f'<td class="summary-cell">'
+        f'<div class="summary-text" lang="he" dir="rtl">{html.escape(text)}</div>'
+        f'<div class="summary-meta" title="{html.escape(title)}">{html.escape(source_label)}</div>'
+        f'</td>'
+    )
+
+
 def _row(entry: dict) -> str:
     original_name = entry.get("original_name", "?")
     sha = entry.get("sha256", "")[:8]
@@ -100,6 +125,7 @@ def _row(entry: dict) -> str:
 
     return f"""<tr>
   <td>{_file_link(original_rel, original_name)}<div class="sha">{html.escape(sha)}</div></td>
+  {_summary_cell(entry)}
   <td>{_file_link(md_rel, "Markdown (אנגלית)")}</td>
   <td>{_file_link(hebrew_rel, "Markdown (עברית)")}</td>
   <td class="num">{pages if pages is not None else "—"}</td>
@@ -116,7 +142,7 @@ CSS = """
 body {
   font-family: "Segoe UI", Arial, sans-serif;
   margin: 24px auto;
-  max-width: 1400px;
+  max-width: 1640px;
   color: #1f2328;
   background: #fbfbfc;
 }
@@ -136,6 +162,7 @@ table {
   width: 100%;
   background: #fff;
   font-size: 13px;
+  table-layout: auto;
 }
 th, td {
   border: 1px solid #d0d7de;
@@ -151,6 +178,20 @@ a:hover { text-decoration: underline; }
 .sha { color: #999; font-size: 11px; font-family: ui-monospace, Consolas, monospace; }
 .when { color: #777; font-size: 11px; margin-top: 4px; }
 .missing { color: #999; font-style: italic; }
+.summary-cell { width: 360px; max-width: 360px; }
+.summary-text {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: #24292f;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.summary-meta {
+  color: #8a8f96;
+  font-size: 10.5px;
+  margin-top: 6px;
+  letter-spacing: 0.02em;
+}
 .pill {
   display: inline-block;
   padding: 2px 10px;
@@ -187,6 +228,9 @@ def render(log: dict) -> str:
     ocr_count = sum(
         1 for e in entries if (e.get("step1") or {}).get("mode") == "ocr"
     )
+    summary_count = sum(
+        1 for e in entries if (e.get("summary") or {}).get("text")
+    )
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     return f"""<!DOCTYPE html>
@@ -208,12 +252,14 @@ def render(log: dict) -> str:
   <div><strong>{errors}</strong>שגיאות</div>
   <div><strong>{pending}</strong>ממתינים</div>
   <div><strong>{ocr_count}</strong>עברו OCR</div>
+  <div><strong>{summary_count}</strong>עם תקציר עברי</div>
 </div>
 
 <table>
 <thead>
 <tr>
   <th>מסמך מקור (PDF)</th>
+  <th>תקציר קצר</th>
   <th>שלב 1: Markdown באנגלית</th>
   <th>שלב 2: Markdown בעברית</th>
   <th>עמודים</th>

@@ -13,7 +13,8 @@ tuned before moving on:
 | 1 | `step1_pdf_to_md.py` | `to_translate/*.pdf` | `step1_md/<basename>/*.md` (+ `images/`) |
 | 2 | `translate_md.py` | `step1_md/<basename>/*.md` | `translated_md/<basename>/*.he.md` |
 | 3a | `translate_articles.py` | `to_translate/*.pdf` (legacy direct PDF→DOCX flow) | `translated/<basename>/*.he.docx` |
-| 3b | `generate_index.py` | `translation_log.json` | `index.html` (browseable table) |
+| 3b | `generate_summaries.py` | translated Hebrew MD (or original Hebrew MD) | per-doc `summary.text` cached in `translation_log.json` |
+| 3c | `generate_index.py` | `translation_log.json` | `index.html` (browseable table) |
 
 For scanned (image-only) PDFs, step 1 automatically falls back to OCR
 via Tesseract (`heb` + `eng` traineddata, shipped in `tessdata_local/`).
@@ -49,13 +50,16 @@ re-processed.
 - `translation_log.json` — durable record of every file we've seen, keyed by
   SHA-256 so duplicate uploads are never re-processed.
 - `index.html` — generated browseable table with columns:
-  Original | Translated | Has pictures | Page count | Source language | Translated at.
+  Original | Short Hebrew summary | Translated MD | Page count | Has pictures |
+  Source language | OCR | Per-stage status.
 - `_download_drive.py` — pulls the PDFs from Drive into `to_translate/`.
 - `step1_pdf_to_md.py` — PDF → English Markdown via `pymupdf4llm`. Optional
   per-paragraph language filter drops e.g. the Slovenian abstract in Gopher.
 - `translate_md.py` — English Markdown → Hebrew Markdown (preserves
   headings, lists, image refs, tables, HTML comments).
 - `translate_articles.py` — legacy direct PDF → DOCX translation pipeline.
+- `generate_summaries.py` — extractive Hebrew summary per document, cached
+  back into `translation_log.json` under the `summary` key.
 - `generate_index.py` — rebuild `index.html` from the current log.
 - `tessdata_local/` — bundled Tesseract language data (`eng`, `osd`,
   `heb`); kept in-repo so OCR works without admin install of language
@@ -94,7 +98,7 @@ py -3.13 _config.py
 Requires Python 3.13 (the version with the dependencies installed on this machine):
 
 ```powershell
-py -3.13 -m pip install --user gdown pymupdf pymupdf4llm deep-translator python-docx langdetect pytesseract Pillow
+py -3.13 -m pip install --user gdown pymupdf pymupdf4llm deep-translator python-docx langdetect pytesseract Pillow sumy
 ```
 
 OCR also needs Tesseract installed on the OS (`winget install --id
@@ -146,16 +150,43 @@ and the engine that produces the most characters in the *expected script*
 wins — e.g. for `heb` we count Hebrew code points, so eng-engine garbage on
 a Hebrew page doesn't accidentally win.
 
+## Hebrew summaries (column for the index)
+
+```powershell
+# generate / refresh the per-document Hebrew summary cache
+py -3.13 generate_summaries.py
+
+# force-regenerate every summary (e.g. after a tweak to the cleaner)
+py -3.13 generate_summaries.py --force
+```
+
+`generate_summaries.py` picks the best Hebrew source available for each
+log entry:
+
+- `translation_md.status == "done"` → use the translated Hebrew MD
+  (`translated_md/<basename>/*.he.md`).
+- `translation_md.status == "already_hebrew"` → use the original step-1
+  Markdown (`step1_md/<basename>/*.md`), which is already in Hebrew.
+
+It strips Markdown formatting and a list of known boilerplate
+substrings (JSTOR / "תוכן זה הורד" / copyright lines, etc.), keeps only
+Hebrew-heavy candidate sentences, and feeds them through `sumy`'s LSA
+extractive summarizer to pick the best ~3 sentences. The result is
+stored in `translation_log.json` under `summary.text`. Re-runs are no-ops
+unless the source MD has changed (we compare size + mtime) or `--force`
+is passed.
+
 ## Index page
 
 ```powershell
 py -3.13 generate_index.py
 ```
 
-Reads `translation_log.json` and writes `index.html` (open it in a browser).
-Columns: original PDF, step 1 Markdown, Hebrew Markdown, pages, image count,
-source language, OCR flag, per-stage status pill. Re-run any time the log
-changes.
+Reads `translation_log.json` and writes `index.html` (open it in a
+browser). Columns: original PDF, **short Hebrew summary**, step 1
+Markdown, Hebrew Markdown, pages, image count, source language, OCR
+flag, per-stage status pill. Re-run any time the log changes (most
+importantly: after a new `generate_summaries.py` run).
 
 ## Step 2: English MD → Hebrew MD
 
