@@ -2,6 +2,12 @@
 
 Hebrew translations of archaeology articles sourced from a shared Google Drive folder.
 
+> **New to this repo?** Start with [`USAGE.md`](./USAGE.md) — a
+> task-oriented guide covering setup, CLI activation, where to put
+> source PDFs, required access, and which AI engines are wired in
+> (and how to swap them). This README is the design / per-file
+> reference.
+
 ## Pipeline (staged)
 
 The project is split into independent steps so each can be inspected /
